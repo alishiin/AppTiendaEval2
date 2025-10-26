@@ -53,15 +53,57 @@ fun RegisterScreen(navController: NavController) {
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Registro de Usuario", style = MaterialTheme.typography.h6, color = Color.Black)
+                Text(
+                    "Registro de Usuario",
+                    style = MaterialTheme.typography.h6,
+                    color = Color.Black
+                )
                 Spacer(Modifier.height(16.dp))
 
-                OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre completo") })
-                OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
-                OutlinedTextField(value = direccion, onValueChange = { direccion = it }, label = { Text("Dirección") })
-                OutlinedTextField(value = rut, onValueChange = { rut = it }, label = { Text("RUT") })
-                OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Contraseña") })
-                OutlinedTextField(value = confirmPassword, onValueChange = { confirmPassword = it }, label = { Text("Confirmar Contraseña") })
+                val blackFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Black,
+                    unfocusedBorderColor = Color.Black,
+                    cursorColor = Color.Black,
+                    textColor = Color.Black,
+                    focusedLabelColor = Color.Black,
+                    unfocusedLabelColor = Color.Black
+                )
+                OutlinedTextField(
+                    value = nombre,
+                    onValueChange = { nombre = it },
+                    label = { Text("Nombre completo") },
+                    colors = blackFieldColors
+                )
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email") },
+                    colors = blackFieldColors
+                )
+                OutlinedTextField(
+                    value = direccion,
+                    onValueChange = { direccion = it },
+                    label = { Text("Dirección") },
+                    colors = blackFieldColors
+                )
+                OutlinedTextField(
+                    value = rut,
+                    onValueChange = { rut = it },
+                    label = { Text("RUT") },
+                    colors = blackFieldColors
+                )
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Contraseña") },
+                    colors = blackFieldColors
+                )
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = { confirmPassword = it },
+                    label = { Text("Confirmar Contraseña") },
+                    colors = blackFieldColors
+                )
                 Spacer(Modifier.height(16.dp))
 
                 if (errorMessage.isNotEmpty()) {
@@ -85,7 +127,7 @@ fun RegisterScreen(navController: NavController) {
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF000000), //
+                        backgroundColor = Color.Black,
                         contentColor = Color.White
                     )
                 ) {

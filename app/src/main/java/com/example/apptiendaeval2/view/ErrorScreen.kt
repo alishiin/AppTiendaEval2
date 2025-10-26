@@ -28,7 +28,7 @@ fun ErrorScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "❌ Hubo un problema con tu compra.",
+                "Hubo un problema con tu compra.",
                 style = MaterialTheme.typography.h6 // <-- cambiado de headlineSmall
             )
             Spacer(modifier = Modifier.height(16.dp))

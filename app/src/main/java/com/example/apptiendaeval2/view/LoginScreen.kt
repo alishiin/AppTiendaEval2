@@ -29,13 +29,11 @@ fun LoginScreen(navController: NavController) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White.copy(alpha = 0.35f))
         )
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -49,32 +47,38 @@ fun LoginScreen(navController: NavController) {
                     .background(Color.White.copy(alpha = 0.6f))
                     .padding(24.dp)
             ) {
-                Text("Inicio de Sesión", style = MaterialTheme.typography.h5, color = Color.Black)
+                Text(
+                    "Inicio de Sesión",
+                    style = MaterialTheme.typography.h5,
+                    color = Color.Black
+                )
                 Spacer(Modifier.height(16.dp))
+
+                val blackFieldColors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.White.copy(alpha = 0.5f),
+                    focusedIndicatorColor = Color.Black,
+                    unfocusedIndicatorColor = Color.Black,
+                    cursorColor = Color.Black,
+                    textColor = Color.Black,
+                    focusedLabelColor = Color.Black,
+                    unfocusedLabelColor = Color.Black
+                )
 
                 TextField(
                     value = email,
                     onValueChange = { email = it },
                     label = { Text("Email") },
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.White.copy(alpha = 0.5f),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    )
+                    colors = blackFieldColors
                 )
                 Spacer(Modifier.height(8.dp))
+
                 TextField(
                     value = password,
                     onValueChange = { password = it },
                     label = { Text("Contraseña") },
                     visualTransformation = PasswordVisualTransformation(),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.White.copy(alpha = 0.5f),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    )
+                    colors = blackFieldColors
                 )
-
                 Spacer(Modifier.height(16.dp))
 
                 if (errorMessage.isNotEmpty()) {
@@ -86,19 +90,26 @@ fun LoginScreen(navController: NavController) {
                     onClick = {
                         errorMessage = ""
                         when {
-                            email.isBlank() || password.isBlank() -> errorMessage = "Todos los campos son obligatorios"
-                            email == "admin@tienda.cl" && password == "admin123" -> navController.navigate("backoffice")
-                            UserRepository.validateUser(email, password) -> navController.navigate("catalog")
+                            email.isBlank() || password.isBlank() ->
+                                errorMessage = "Todos los campos son obligatorios"
+                            email == "admin@tienda.cl" && password == "admin123" ->
+                                navController.navigate("backoffice")
+                            UserRepository.validateUser(email, password) ->
+                                navController.navigate("catalog")
                             else -> errorMessage = "Email o contraseña incorrectos"
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF0E0E0E),
+                        backgroundColor = Color.Black,
                         contentColor = Color.White
-                    )
+                    ),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Ingresar")
                 }
+
+                Spacer(Modifier.height(8.dp))
+
                 TextButton(onClick = { navController.navigate("register") }) {
                     Text("¿No tienes cuenta? Regístrate", color = Color.Black)
                 }
