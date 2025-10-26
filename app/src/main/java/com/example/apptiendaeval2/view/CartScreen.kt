@@ -26,7 +26,6 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
     val total = cartItems.sumOf { it.producto.precio * it.cantidad }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo igual al Login
         Image(
             painter = painterResource(id = com.example.apptiendaeval2.R.drawable.fondo_godines),
             contentDescription = null,
@@ -34,43 +33,28 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
             modifier = Modifier.fillMaxSize()
         )
 
-        // Capa semi-transparente
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White.copy(alpha = 0.35f))
         )
 
-        // Contenido del carrito
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
             if (cartItems.isEmpty()) {
-                // Carrito vacío con botón para volver
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            "Tu carrito está vacío",
-                            style = MaterialTheme.typography.h6,
-                            color = Color.Black
-                        )
-
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("Tu carrito está vacío", style = MaterialTheme.typography.h6, color = Color.Black)
                         Spacer(modifier = Modifier.height(16.dp))
-
                         Button(
-                            // ✅ Ruta corregida: vuelve al catálogo correctamente
                             onClick = { navController.navigate("catalog") },
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color.Black.copy(alpha = 0.7f),
-                                contentColor = Color.White
-                            ),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black, contentColor = Color.White),
                             shape = MaterialTheme.shapes.medium
                         ) {
                             Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
@@ -80,7 +64,6 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
                     }
                 }
             } else {
-                // Lista de productos
                 LazyColumn(modifier = Modifier.weight(1f)) {
                     items(cartItems.size) { index ->
                         val item = cartItems[index]
@@ -92,25 +75,17 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
 
                 Spacer(Modifier.height(12.dp))
 
-                Text(
-                    "Total: \$${total}",
-                    style = MaterialTheme.typography.h5,
-                    modifier = Modifier.align(Alignment.End)
-                )
+                Text("Total: \$${total}", style = MaterialTheme.typography.h5, color = Color.Black, modifier = Modifier.align(Alignment.End))
 
                 Spacer(Modifier.height(16.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(
                         onClick = { cartViewModel.clear() },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
                     ) {
-                        Icon(Icons.Default.Delete, contentDescription = "Vaciar carrito")
-                        Spacer(Modifier.width(4.dp))
-                        Text("Vaciar")
+                        Text("Vaciar", color = Color.Black)
                     }
 
                     Button(
@@ -124,7 +99,8 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
                                 }
                             }
                         },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black, contentColor = Color.White)
                     ) {
                         Text("Finalizar compra")
                     }
@@ -158,26 +134,23 @@ fun CartItemRow(item: CartItem, onQuantityChange: (Int) -> Unit) {
             Spacer(Modifier.width(8.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(item.producto.nombre, style = MaterialTheme.typography.h6)
-                Text("Precio: \$${item.producto.precio}")
+                Text(item.producto.nombre, style = MaterialTheme.typography.h6, color = Color.Black)
+                Text("Precio: \$${item.producto.precio}", color = Color.Black)
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     OutlinedButton(
-                        onClick = {
-                            if (item.cantidad > 1) onQuantityChange(item.cantidad - 1)
-                        },
-                        contentPadding = PaddingValues(horizontal = 8.dp)
-                    ) { Text("-") }
+                        onClick = { if (item.cantidad > 1) onQuantityChange(item.cantidad - 1) },
+                        contentPadding = PaddingValues(horizontal = 8.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
+                    ) { Text("-", color = Color.Black) }
 
-                    Text(
-                        text = item.cantidad.toString(),
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
+                    Text(text = item.cantidad.toString(), modifier = Modifier.padding(horizontal = 8.dp), color = Color.Black)
 
                     OutlinedButton(
                         onClick = { onQuantityChange(item.cantidad + 1) },
-                        contentPadding = PaddingValues(horizontal = 8.dp)
-                    ) { Text("+") }
+                        contentPadding = PaddingValues(horizontal = 8.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
+                    ) { Text("+", color = Color.Black) }
                 }
             }
         }

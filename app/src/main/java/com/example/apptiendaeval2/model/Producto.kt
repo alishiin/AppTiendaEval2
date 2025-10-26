@@ -5,8 +5,8 @@ data class Producto(
     val nombre: String,
     val precio: Int,
     val descripcion: String,
-    val imagenResId: Int, // Cambiado de String a Int
-    val imagenesResId: List<Int> = emptyList(), // Lista de imágenes locales
+    val imagenResId: Int,
+    val imagenesResId: List<Int> = emptyList(),
     val valoraciones: List<Valoracion> = emptyList()
 )
 
