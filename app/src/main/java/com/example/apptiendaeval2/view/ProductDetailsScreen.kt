@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import com.example.apptiendaval2.model.ProductRepository
 import com.example.apptiendaval2.model.Valoracion
 import com.example.apptiendaval2.viewmodel.CartViewModel
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun ProductDetailsScreen(
@@ -52,7 +53,9 @@ fun ProductDetailsScreen(
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
                     }
-                }
+                },
+                backgroundColor = Color.Black,
+                contentColor = Color.White
             )
         }
     ) { padding ->
