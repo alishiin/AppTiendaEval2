@@ -16,6 +16,7 @@ import com.example.apptiendaval2.view.SuccessScreen
 import com.example.apptiendaval2.view.ErrorScreen
 import com.example.apptiendaval2.view.BackOfficeScreen
 import com.example.apptiendaval2.view.AddProductScreen
+import com.example.apptiendaval2.view.HomeScreen
 
 @Composable
 fun NavManager(navController: NavHostController, cartViewModel: CartViewModel) {
@@ -23,6 +24,8 @@ fun NavManager(navController: NavHostController, cartViewModel: CartViewModel) {
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
         composable("catalog") { CatalogScreen(navController, cartViewModel = cartViewModel) }
+        composable("home") { HomeScreen(navController) }
+
         composable(
             route = "productDetails/{productId}",
             arguments = listOf(navArgument("productId") { type = NavType.IntType })

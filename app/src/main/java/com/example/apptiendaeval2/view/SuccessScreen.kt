@@ -52,7 +52,7 @@ fun SuccessScreen(navController: NavController) {
 
                 OutlinedButton(
                     onClick = {
-                        navController.navigate("catalog") { popUpTo(0) }
+                        navController.navigate("home") { popUpTo(0) }
                     },
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
                 ) {

@@ -95,7 +95,7 @@ fun LoginScreen(navController: NavController) {
                             email == "admin@tienda.cl" && password == "admin123" ->
                                 navController.navigate("backoffice")
                             UserRepository.validateUser(email, password) ->
-                                navController.navigate("catalog")
+                                navController.navigate("home")
                             else -> errorMessage = "Email o contraseña incorrectos"
                         }
                     },
