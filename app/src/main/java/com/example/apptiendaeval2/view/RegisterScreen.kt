@@ -83,7 +83,11 @@ fun RegisterScreen(navController: NavController) {
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFF000000), //
+                        contentColor = Color.White
+                    )
                 ) {
                     Text("Registrar y volver al Login")
                 }
