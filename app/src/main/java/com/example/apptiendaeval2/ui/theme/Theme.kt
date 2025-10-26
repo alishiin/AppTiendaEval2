@@ -5,17 +5,18 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Color
 
 // Paleta de colores
 private val DarkColorPalette = darkColors(
-    primary = Purple80,
-    primaryVariant = PurpleGrey80,
+    primary = Color(0xFF4A4A4A),
+    primaryVariant = Color(0xFF3A3A3A),
     secondary = Pink80
 )
 
 private val LightColorPalette = lightColors(
-    primary = Purple40,
-    primaryVariant = PurpleGrey40,
+    primary = Color(0xFFB0B0B0),
+    primaryVariant = Color(0xFF999999),
     secondary = Pink40
 )
 

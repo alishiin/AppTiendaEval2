@@ -13,16 +13,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.apptiendaval2.model.UserRepository
 import com.example.apptiendaeval2.R
 
 @Composable
 fun LoginScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize()) {
-
-        // 🖼 Fondo de pantalla
         Image(
             painter = painterResource(id = R.drawable.fondo_godines),
             contentDescription = null,
@@ -30,14 +30,12 @@ fun LoginScreen(navController: NavController) {
             modifier = Modifier.fillMaxSize()
         )
 
-        // 🌫 Capa semi-transparente para que se lea el formulario
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White.copy(alpha = 0.35f))
         )
 
-        // 📦 Contenido del formulario
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -48,13 +46,12 @@ fun LoginScreen(navController: NavController) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .background(Color.White.copy(alpha = 0.6f)) // fondo semi-transparente del formulario
+                    .background(Color.White.copy(alpha = 0.6f))
                     .padding(24.dp)
             ) {
                 Text("Inicio de Sesión", style = MaterialTheme.typography.h5, color = Color.Black)
                 Spacer(Modifier.height(16.dp))
 
-                // Campos sin borde
                 TextField(
                     value = email,
                     onValueChange = { email = it },
@@ -80,18 +77,30 @@ fun LoginScreen(navController: NavController) {
 
                 Spacer(Modifier.height(16.dp))
 
-                Button(onClick = {
-                    if (email == "admin@tienda.cl") {
-                        navController.navigate("backoffice")
-                    } else {
-                        navController.navigate("catalog")
-                    }
-                }) {
-                    Text("Ingresar")
+                if (errorMessage.isNotEmpty()) {
+                    Text(errorMessage, color = Color.Red)
+                    Spacer(Modifier.height(8.dp))
                 }
 
+                Button(
+                    onClick = {
+                        errorMessage = ""
+                        when {
+                            email.isBlank() || password.isBlank() -> errorMessage = "Todos los campos son obligatorios"
+                            email == "admin@tienda.cl" && password == "admin123" -> navController.navigate("backoffice")
+                            UserRepository.validateUser(email, password) -> navController.navigate("catalog")
+                            else -> errorMessage = "Email o contraseña incorrectos"
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFF0E0E0E),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Ingresar")
+                }
                 TextButton(onClick = { navController.navigate("register") }) {
-                    Text("¿No tienes cuenta? Regístrate")
+                    Text("¿No tienes cuenta? Regístrate", color = Color.Black)
                 }
             }
         }
