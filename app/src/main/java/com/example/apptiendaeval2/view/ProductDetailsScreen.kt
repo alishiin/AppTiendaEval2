@@ -51,7 +51,7 @@ fun ProductDetailsScreen(
                 title = { Text(producto.nombre, style = MaterialTheme.typography.h6) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás", tint = Color.White)
                     }
                 },
                 backgroundColor = Color.Black,
@@ -66,10 +66,12 @@ fun ProductDetailsScreen(
                 .fillMaxSize()
         ) {
 
-            // Imagen principal
+
             Card(
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth().height(200.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
                 elevation = 4.dp
             ) {
                 Image(
@@ -82,10 +84,11 @@ fun ProductDetailsScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // Carrusel de miniaturas
+
             LazyRow(modifier = Modifier.fillMaxWidth()) {
                 items(producto.imagenesResId.size + 1) { index ->
-                    val imgRes = if (index == 0) producto.imagenResId else producto.imagenesResId.getOrNull(index - 1)
+                    val imgRes =
+                        if (index == 0) producto.imagenResId else producto.imagenesResId.getOrNull(index - 1)
                     if (imgRes != null) {
                         Card(
                             modifier = Modifier
@@ -107,20 +110,20 @@ fun ProductDetailsScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // Nombre y precio
+
             Text(producto.nombre, style = MaterialTheme.typography.h6)
             Spacer(Modifier.height(4.dp))
             Text("Precio: \$${producto.precio}", style = MaterialTheme.typography.subtitle1)
 
             Spacer(Modifier.height(12.dp))
 
-            // Descripción
+
             Text("Descripción", style = MaterialTheme.typography.subtitle1)
             Text(producto.descripcion, modifier = Modifier.padding(top = 6.dp))
 
             Spacer(Modifier.height(12.dp))
 
-            // Valoraciones
+
             Text("Valoraciones", style = MaterialTheme.typography.subtitle1)
             if (producto.valoraciones.isEmpty()) {
                 Text("Aún no hay valoraciones.")
@@ -132,16 +135,36 @@ fun ProductDetailsScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // Botones: Agregar al carrito + Ir al carrito
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(modifier = Modifier.weight(1f), onClick = {
-                    cartViewModel.addProduct(producto)
-                }) {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        cartViewModel.addProduct(producto)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Black,
+                        contentColor = Color.White
+                    )
+                ) {
                     Text("Agregar al carrito")
                 }
-                OutlinedButton(modifier = Modifier.weight(1f), onClick = {
-                    navController.navigate("cart")
-                }) {
+
+
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        navController.navigate("cart")
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Black,
+                        contentColor = Color.White
+                    )
+                ) {
                     Text("Ir al carrito")
                 }
             }
@@ -152,11 +175,16 @@ fun ProductDetailsScreen(
 @Composable
 private fun RatingRow(v: Valoracion) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
         shape = RoundedCornerShape(6.dp),
         elevation = 2.dp
     ) {
-        Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(v.usuario, style = MaterialTheme.typography.subtitle2)
                 Text(v.comentario, style = MaterialTheme.typography.body2)
