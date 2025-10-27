@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.example.apptiendaval2.model.Producto
+import com.example.apptiendaval2.viewmodel.CartViewModel
 
 data class CartItem(val producto: Producto, val cantidad: Int = 1) // cantidad ahora es val
 

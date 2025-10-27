@@ -17,6 +17,7 @@ import com.example.apptiendaval2.view.ErrorScreen
 import com.example.apptiendaval2.view.BackOfficeScreen
 import com.example.apptiendaval2.view.AddProductScreen
 import com.example.apptiendaval2.view.HomeScreen
+import com.example.apptiendaval2.view.CheckoutScreen
 
 @Composable
 fun NavManager(navController: NavHostController, cartViewModel: CartViewModel) {
@@ -25,6 +26,7 @@ fun NavManager(navController: NavHostController, cartViewModel: CartViewModel) {
         composable("register") { RegisterScreen(navController) }
         composable("catalog") { CatalogScreen(navController, cartViewModel = cartViewModel) }
         composable("home") { HomeScreen(navController) }
+        composable("checkout") { CheckoutScreen(navController, cartViewModel) }
 
         composable(
             route = "productDetails/{productId}",

@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -57,9 +56,9 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black, contentColor = Color.White),
                             shape = MaterialTheme.shapes.medium
                         ) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Volver", tint = Color.White)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Volver a la tienda")
+                            Text("Volver a la tienda", color = Color.White)
                         }
                     }
                 }
@@ -75,7 +74,12 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
 
                 Spacer(Modifier.height(12.dp))
 
-                Text("Total: \$${total}", style = MaterialTheme.typography.h5, color = Color.Black, modifier = Modifier.align(Alignment.End))
+                Text(
+                    "Total: \$${total}",
+                    style = MaterialTheme.typography.h5,
+                    color = Color.Black,
+                    modifier = Modifier.align(Alignment.End)
+                )
 
                 Spacer(Modifier.height(16.dp))
 
@@ -87,15 +91,14 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
                     ) {
                         Text("Vaciar", color = Color.Black)
                     }
-
                     Button(
                         onClick = {
-                            if (total > 0) {
-                                if (total < 100000) {
-                                    navController.navigate("success")
-                                    cartViewModel.clear()
-                                } else {
-                                    navController.navigate("error")
+                            val totalItems = cartItems.sumOf { it.cantidad }
+                            if (totalItems > 15) {
+                                navController.navigate("error")
+                            } else {
+                                if (total > 0) {
+                                    navController.navigate("checkout")
                                 }
                             }
                         },
@@ -104,6 +107,7 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
                     ) {
                         Text("Finalizar compra")
                     }
+
                 }
             }
         }
