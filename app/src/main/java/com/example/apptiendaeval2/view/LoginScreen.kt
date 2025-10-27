@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.apptiendaval2.model.UserRepository
 import com.example.apptiendaeval2.R
+import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -48,8 +49,8 @@ fun LoginScreen(navController: NavController) {
                     .padding(24.dp)
             ) {
                 Text(
-                    "Inicio de Sesión",
-                    style = MaterialTheme.typography.h5,
+                    "INICIO DE SESIÓN",
+                    style = MaterialTheme.typography.h4,
                     color = Color.Black
                 )
                 Spacer(Modifier.height(16.dp))
@@ -105,13 +106,20 @@ fun LoginScreen(navController: NavController) {
                     ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Ingresar")
+                    Text(
+                        text = "INGRESAR",
+                        style = FuturaButtonStyle
+                    )
                 }
 
                 Spacer(Modifier.height(8.dp))
 
                 TextButton(onClick = { navController.navigate("register") }) {
-                    Text("¿No tienes cuenta? Regístrate", color = Color.Black)
+                    Text(
+                        text = "¿NO TIENES CUENTA? REGÍSTRATE",
+                        color = Color.Black,
+                        style = MaterialTheme.typography.button
+                    )
                 }
             }
         }

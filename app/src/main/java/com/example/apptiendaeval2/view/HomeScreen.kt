@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.ui.graphics.Color
 import com.example.apptiendaeval2.R
+import com.example.apptiendaeval2.ui.theme.CrimeWaveTitle
+import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -46,7 +48,12 @@ fun HomeScreen(navController: NavController) {
         Column(modifier = Modifier.fillMaxSize()) {
             // Top bar simulada
             TopAppBar(
-                title = { Text("Bienvenido a CrimeWave") },
+                title = {
+                    Text(
+                        text = "Bienvenido a CrimeWave",
+                        style = CrimeWaveTitle
+                    )
+                },
                 backgroundColor = Color.Black,
                 contentColor = Color.White
             )
@@ -63,13 +70,16 @@ fun HomeScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
-                Text("Ir a comprar")
+                Text(
+                    text = "IR A COMPRAR",
+                    style = FuturaButtonStyle
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                "Productos Más Valorados",
+                "PRODUCTOS MÁS VALORADOS",
                 style = MaterialTheme.typography.h5,
                 color = Color.Black,
                 modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)

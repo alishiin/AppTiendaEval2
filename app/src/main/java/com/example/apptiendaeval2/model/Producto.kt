@@ -6,6 +6,7 @@ data class Producto(
     val precio: Int,
     val descripcion: String,
     val imagenResId: Int,
+    val categoria: Categoria,
     val imagenesResId: List<Int> = emptyList(),
     val valoraciones: List<Valoracion> = emptyList(),
     val tallas: List<String> = listOf("S","M","L","XL"),

@@ -10,6 +10,11 @@ data class User(
 object UserRepository {
     private val users = mutableListOf<User>()
 
+    init {
+        // Usuario predeterminado para testing rápido
+        users.add(User("Test User", "a@a.cl", "123123"))
+    }
+
     fun addUser(user: User) {
         users.add(user)
     }

@@ -1,7 +1,7 @@
 package com.example.apptiendaval2.view
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,6 +20,9 @@ import androidx.navigation.NavController
 import com.example.apptiendaval2.model.ProductRepository
 import com.example.apptiendaval2.model.Valoracion
 import com.example.apptiendaval2.viewmodel.CartViewModel
+import com.example.apptiendaeval2.ui.theme.FuturaProductTitle
+import com.example.apptiendaeval2.ui.theme.FuturaPrice
+import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
 
 @Composable
 fun ProductDetailsScreen(
@@ -44,7 +47,7 @@ fun ProductDetailsScreen(
                     contentColor = Color.White
                 )
             ) {
-                Text("Volver al catálogo")
+                Text("VOLVER AL CATÁLOGO", style = FuturaButtonStyle)
             }
         }
         return
@@ -56,7 +59,7 @@ fun ProductDetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(producto.nombre, style = MaterialTheme.typography.h6, color = Color.White) },
+                title = { Text(producto.nombre.uppercase(), style = FuturaProductTitle, color = Color.White) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Atrás", tint = Color.White)
@@ -115,18 +118,18 @@ fun ProductDetailsScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            Text(producto.nombre, style = MaterialTheme.typography.h6, color = Color.Black)
+            Text(producto.nombre.uppercase(), style = FuturaProductTitle, color = Color.Black)
             Spacer(Modifier.height(4.dp))
-            Text("Precio: \$${producto.precio}", style = MaterialTheme.typography.subtitle1, color = Color.Black)
+            Text("PRECIO: \$${producto.precio}", style = FuturaPrice, color = Color(0xFF006400))
 
             Spacer(Modifier.height(12.dp))
 
-            Text("Descripción", style = MaterialTheme.typography.subtitle1, color = Color.Black)
-            Text(producto.descripcion, modifier = Modifier.padding(top = 6.dp), color = Color.Black)
+            Text("DESCRIPCIÓN", style = MaterialTheme.typography.h5, color = Color.Black)
+            Text(producto.descripcion.uppercase(), style = MaterialTheme.typography.body1, modifier = Modifier.padding(top = 6.dp), color = Color.Black)
 
             Spacer(Modifier.height(12.dp))
 
-            Text("Tallas disponibles", style = MaterialTheme.typography.subtitle1, color = Color.Black)
+            Text("TALLAS DISPONIBLES", style = MaterialTheme.typography.h5, color = Color.Black)
             LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
                 items(producto.tallas.size) { index ->
                     val talla = producto.tallas[index]
@@ -138,16 +141,16 @@ fun ProductDetailsScreen(
                         ),
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
-                        Text(talla)
+                        Text(talla, style = MaterialTheme.typography.button)
                     }
                 }
             }
 
             Spacer(Modifier.height(12.dp))
 
-            Text("Valoraciones", style = MaterialTheme.typography.subtitle1, color = Color.Black)
+            Text("VALORACIONES", style = MaterialTheme.typography.h5, color = Color.Black)
             if (producto.valoraciones.isEmpty()) {
-                Text("Aún no hay valoraciones.", color = Color.Black)
+                Text("AÚN NO HAY VALORACIONES.", style = MaterialTheme.typography.body1, color = Color.Black)
             } else {
                 producto.valoraciones.forEach { v -> RatingRow(v) }
             }
@@ -166,7 +169,7 @@ fun ProductDetailsScreen(
                         contentColor = Color.White
                     )
                 ) {
-                    Text("Agregar al carrito")
+                    Text("AGREGAR AL CARRITO", style = FuturaButtonStyle)
                 }
 
                 Button(
@@ -177,7 +180,7 @@ fun ProductDetailsScreen(
                         contentColor = Color.White
                     )
                 ) {
-                    Text("Ir al carrito")
+                    Text("IR AL CARRITO", style = FuturaButtonStyle)
                 }
             }
         }
