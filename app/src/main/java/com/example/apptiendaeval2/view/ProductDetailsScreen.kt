@@ -54,7 +54,12 @@ fun ProductDetailsScreen(
     }
 
     var selectedImage by remember { mutableStateOf(producto.imagenResId) }
-    var selectedTalla by remember { mutableStateOf(producto.tallas.firstOrNull() ?: "S") }
+    var selectedTalla by remember {
+        mutableStateOf(
+            if (producto.medidas.isNotEmpty()) producto.medidas.firstOrNull() ?: "30cmx30cm"
+            else producto.tallas.firstOrNull() ?: "S"
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -129,19 +134,39 @@ fun ProductDetailsScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            Text("TALLAS DISPONIBLES", style = MaterialTheme.typography.h5, color = Color.Black)
-            LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
-                items(producto.tallas.size) { index ->
-                    val talla = producto.tallas[index]
-                    OutlinedButton(
-                        onClick = { selectedTalla = talla },
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = if (selectedTalla == talla) Color.White else Color.Black,
-                            backgroundColor = if (selectedTalla == talla) Color.Black else Color.Transparent
-                        ),
-                        modifier = Modifier.padding(end = 8.dp)
-                    ) {
-                        Text(talla, style = MaterialTheme.typography.button)
+            // Mostrar tallas o medidas según la categoría
+            if (producto.medidas.isNotEmpty()) {
+                Text("MEDIDAS DISPONIBLES", style = MaterialTheme.typography.h5, color = Color.Black)
+                LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
+                    items(producto.medidas.size) { index ->
+                        val medida = producto.medidas[index]
+                        OutlinedButton(
+                            onClick = { selectedTalla = medida },
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = if (selectedTalla == medida) Color.White else Color.Black,
+                                backgroundColor = if (selectedTalla == medida) Color.Black else Color.Transparent
+                            ),
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            Text(medida, style = MaterialTheme.typography.button)
+                        }
+                    }
+                }
+            } else {
+                Text("TALLAS DISPONIBLES", style = MaterialTheme.typography.h5, color = Color.Black)
+                LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
+                    items(producto.tallas.size) { index ->
+                        val talla = producto.tallas[index]
+                        OutlinedButton(
+                            onClick = { selectedTalla = talla },
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = if (selectedTalla == talla) Color.White else Color.Black,
+                                backgroundColor = if (selectedTalla == talla) Color.Black else Color.Transparent
+                            ),
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            Text(talla, style = MaterialTheme.typography.button)
+                        }
                     }
                 }
             }

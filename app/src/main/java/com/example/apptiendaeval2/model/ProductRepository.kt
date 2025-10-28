@@ -83,7 +83,7 @@ object ProductRepository {
             descripcion = "camiseta de manga corta casual y vintage",
             imagenResId = R.drawable.polera_mujer,
             categoria = Categoria.POLERAS,
-            imagenesResId = listOf(),
+            imagenesResId = listOf(R.drawable.polera_mujer, R.drawable.polera_gris, R.drawable.polera_auto),
             valoraciones = listOf(
                 Valoracion("RataPeluda",5, "muy bonitaa"),
                 Valoracion("NamiPlayer", 4, "me quedo super, la volveria a comprar 100 veces jjij")
@@ -97,7 +97,7 @@ object ProductRepository {
             descripcion = "Camiseta de algodon y estampado de dragón",
             imagenResId = R.drawable.polera_dragon,
             categoria = Categoria.POLERAS,
-            imagenesResId = listOf(),
+            imagenesResId = listOf(R.drawable.polera_dragon, R.drawable.polera_negra, R.drawable.camista_diseno_dragon),
             valoraciones = listOf(
                 Valoracion("VichoCo66",6, "tal cual la imagen, me gusto mucho"),
                 Valoracion("Emili<3", 5, "justo lo que esperaba y la calidad 10/10")
@@ -111,7 +111,7 @@ object ProductRepository {
             descripcion = "Camiseta de hombre con cuello redondo manga corta",
             imagenResId = R.drawable.polera_negro_gris,
             categoria = Categoria.POLERAS,
-            imagenesResId = listOf(),
+            imagenesResId = listOf(R.drawable.polera_negro_gris, R.drawable.polera_negra, R.drawable.polera_gris),
             valoraciones = listOf(
                 Valoracion("Kakashi69",4, "muy buena calidad me gustoooo"),
                 Valoracion("Benjita6.5", 5, "ta entera wena la polera siii")
@@ -125,7 +125,7 @@ object ProductRepository {
             descripcion = "Camiseta de hombre street de manga corta y estampado",
             imagenResId = R.drawable.polera_negra_estampado,
             categoria = Categoria.POLERAS,
-            imagenesResId = listOf(),
+            imagenesResId = listOf(R.drawable.polera_negra_estampado, R.drawable.polera_dragon, R.drawable.polera_negra_dark),
             valoraciones = listOf(
                 Valoracion("Manucraft4",5, "muy linda y comoda"),
                 Valoracion("FerguinZ", 4, "la pedí en L y me llego tal cual (soy gei)")
@@ -139,7 +139,7 @@ object ProductRepository {
             descripcion = "Camiseta con estampado de silueta de hombre",
             imagenResId = R.drawable.polera_negra_dark,
             categoria = Categoria.POLERAS,
-            imagenesResId = listOf(),
+            imagenesResId = listOf(R.drawable.polera_negra_dark, R.drawable.polera_negra, R.drawable.polera_negra_estampado),
             valoraciones = listOf(
                 Valoracion("Alishin",3, "me encanto el diseño y no juego lol con los panas"),
                 Valoracion("LaParka", 4, "recomendadaaaa 100%%%%")
@@ -168,7 +168,7 @@ object ProductRepository {
             descripcion = "Camiseta gris de hombre con diseño de dragon",
             imagenResId = R.drawable.camista_diseno_dragon,
             categoria = Categoria.POLERAS,
-            imagenesResId = listOf(),
+            imagenesResId = listOf(R.drawable.camista_diseno_dragon, R.drawable.polera_dragon, R.drawable.polera_gris),
             valoraciones = listOf(
                 Valoracion("Ironman",3, "fresca la tela, me gusto"),
                 Valoracion("Dr.Straño", 3, "esta buena")
@@ -182,7 +182,7 @@ object ProductRepository {
             descripcion = "Shorts informales con estampado UnderGround",
             imagenResId = R.drawable.pantalon_corto,
             categoria = Categoria.PANTALONES,
-            imagenesResId = listOf(),
+            imagenesResId = listOf(R.drawable.pantalon_corto, R.drawable.pantalon_gris, R.drawable.polera_auto),
             valoraciones = listOf(
                 Valoracion("Anndy33",5, "El diseño es de lo mejor"),
                 Valoracion("Hater2", 1, "el estampao se me salio despue de lavar el shor")
@@ -190,76 +190,104 @@ object ProductRepository {
             tallas = listOf("S","M","L","XL")
         ),
 
-        // POLERAS CON CUADROS
+        // CUADROS DECORATIVOS
         Producto(
             id = 14,
-            nombre = "Polera Cuadros Rojos y Negros",
-            precio = 14990,
-            descripcion = "Polera con diseño de cuadros clásico, algodón premium",
-            imagenResId = R.drawable.polera_negra, // temporal hasta tener imagen con cuadros
+            nombre = "Cuadro Abstracto Moderno",
+            precio = 24990,
+            descripcion = "Cuadro abstracto con diseños modernos, impreso en lienzo de alta calidad con marco de madera",
+            imagenResId = R.drawable.cuadro1,
             categoria = Categoria.CUADROS,
-            imagenesResId = listOf(R.drawable.polera_negro_gris, R.drawable.polera_dragon),
+            imagenesResId = listOf(R.drawable.cuadro1, R.drawable.cuadro2),
             valoraciones = listOf(
-                Valoracion("CheckMate99", 5, "Los cuadros están perfectos, muy buena calidad"),
-                Valoracion("PatternLover", 4, "Me encanta el diseño, súper cómoda")
+                Valoracion("ArtLover", 5, "Hermoso cuadro, la calidad del lienzo es excelente"),
+                Valoracion("ModernDecor", 4, "Perfecto para mi sala, combina con todo")
             ),
-            tallas = listOf("S","M","L","XL")
+            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
         ),
         Producto(
             id = 15,
-            nombre = "Polera Cuadros Azules y Blancos",
-            precio = 15990,
-            descripcion = "Polera estilo preppy con cuadros azules y blancos, corte moderno",
-            imagenResId = R.drawable.polera_azul, // temporal hasta tener imagen con cuadros
+            nombre = "Cuadro Paisaje Natural",
+            precio = 27990,
+            descripcion = "Hermoso paisaje natural, colores vivos y realistas, ideal para crear ambiente relajante",
+            imagenResId = R.drawable.cuadro2,
             categoria = Categoria.CUADROS,
-            imagenesResId = listOf(R.drawable.polera_auto, R.drawable.polera_mujer),
+            imagenesResId = listOf(R.drawable.cuadro2, R.drawable.cuadro3),
             valoraciones = listOf(
-                Valoracion("PrepStyle", 5, "Perfecta para el look preppy que buscaba"),
-                Valoracion("BlueSquare", 4, "Los colores son tal como en la foto")
+                Valoracion("NatureLover", 5, "Los colores son increíbles, parece real"),
+                Valoracion("HomeDecor", 4, "Llegó perfectamente embalado, muy recomendado")
             ),
-            tallas = listOf("S","M","L","XL")
+            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
         ),
         Producto(
             id = 16,
-            nombre = "Polera Cuadros Verdes y Grises",
-            precio = 13990,
-            descripcion = "Polera casual con patrón de cuadros verdes y grises, perfecta para el día a día",
-            imagenResId = R.drawable.polera_gris, // temporal hasta tener imagen con cuadros
+            nombre = "Cuadro Minimalista",
+            precio = 19990,
+            descripcion = "Diseño minimalista elegante, perfecto para espacios modernos y sofisticados",
+            imagenResId = R.drawable.cuadro3,
             categoria = Categoria.CUADROS,
-            imagenesResId = listOf(),
+            imagenesResId = listOf(R.drawable.cuadro3, R.drawable.cuadro4),
             valoraciones = listOf(
-                Valoracion("GreenDay", 4, "Me gusta mucho la combinación de colores"),
-                Valoracion("CasualWear", 5, "Súper cómoda para usar todos los días")
+                Valoracion("MinimalStyle", 5, "Exactamente lo que buscaba para mi oficina"),
+                Valoracion("CleanDesign", 4, "Simple pero elegante, me encanta")
             ),
-            tallas = listOf("S","M","L","XL")
+            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
         ),
         Producto(
             id = 17,
-            nombre = "Polera Cuadros Blancos y Negros Clásica",
-            precio = 16990,
-            descripcion = "Polera con el patrón de cuadros más clásico, perfecta para cualquier ocasión",
-            imagenResId = R.drawable.polera_negro_gris, // temporal hasta tener imagen con cuadros
+            nombre = "Cuadro Floral Vintage",
+            precio = 22990,
+            descripcion = "Hermosas flores con estilo vintage, detalles delicados pintados con técnica profesional",
+            imagenResId = R.drawable.cuadro4,
             categoria = Categoria.CUADROS,
-            imagenesResId = listOf(),
+            imagenesResId = listOf(R.drawable.cuadro4, R.drawable.cuadro5),
             valoraciones = listOf(
-                Valoracion("ClassicStyle", 5, "Un clásico que nunca pasa de moda"),
-                Valoracion("SquarePattern", 4, "Excelente calidad de tela y diseño")
+                Valoracion("VintageVibes", 5, "Precioso, le da un toque especial a mi dormitorio"),
+                Valoracion("FlowerPower", 4, "Los detalles florales son hermosos")
             ),
-            tallas = listOf("S","M","L","XL")
+            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
         ),
         Producto(
             id = 18,
-            nombre = "Polera Cuadros Pequeños Multicolor",
-            precio = 17990,
-            descripcion = "Polera con cuadros pequeños en múltiples colores, estilo vintage moderno",
-            imagenResId = R.drawable.polera_dragon, // temporal hasta tener imagen con cuadros
+            nombre = "Cuadro Geométrico Colorido",
+            precio = 25990,
+            descripcion = "Formas geométricas vibrantes, diseño contemporáneo que aporta energía a cualquier espacio",
+            imagenResId = R.drawable.cuadro5,
             categoria = Categoria.CUADROS,
-            imagenesResId = listOf(),
+            imagenesResId = listOf(R.drawable.cuadro5, R.drawable.cuadro6),
             valoraciones = listOf(
-                Valoracion("VintageVibes", 5, "Me encanta el estilo retro con toque moderno"),
-                Valoracion("ColorLover", 4, "Los colores son vibrantes y alegres")
+                Valoracion("GeometryFan", 5, "Los colores son súper vibrantes, me encanta"),
+                Valoracion("ModernArt", 4, "Perfecto para mi sala de estar moderna")
             ),
-            tallas = listOf("S","M","L","XL")
+            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
+        ),
+        Producto(
+            id = 19,
+            nombre = "Cuadro Urbano Industrial",
+            precio = 26990,
+            descripcion = "Motivos urbanos con texturas industriales, perfecto para lofts y espacios contemporáneos",
+            imagenResId = R.drawable.cuadro6,
+            categoria = Categoria.CUADROS,
+            imagenesResId = listOf(R.drawable.cuadro6, R.drawable.cuadro7),
+            valoraciones = listOf(
+                Valoracion("UrbanStyle", 5, "Queda perfecto en mi loft, muy industrial"),
+                Valoracion("CityVibes", 4, "La textura se ve muy real, excelente calidad")
+            ),
+            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
+        ),
+        Producto(
+            id = 20,
+            nombre = "Cuadro Retro Vintage",
+            precio = 21990,
+            descripcion = "Estética retro con tonos cálidos, evoca nostalgia y calidez en tu hogar",
+            imagenResId = R.drawable.cuadro7,
+            categoria = Categoria.CUADROS,
+            imagenesResId = listOf(R.drawable.cuadro7, R.drawable.cuadro1),
+            valoraciones = listOf(
+                Valoracion("RetroLover", 5, "Me transporta a otra época, hermoso"),
+                Valoracion("WarmTones", 4, "Los tonos cálidos crean un ambiente acogedor")
+            ),
+            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
         )
     )
 

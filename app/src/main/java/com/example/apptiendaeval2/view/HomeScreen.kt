@@ -50,7 +50,7 @@ fun HomeScreen(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Bienvenido a CrimeWave",
+                        text = "CrimeWave",
                         style = CrimeWaveTitle
                     )
                 },
