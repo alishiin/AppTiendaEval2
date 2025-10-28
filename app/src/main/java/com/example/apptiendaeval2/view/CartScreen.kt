@@ -52,7 +52,7 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("TU CARRITO ESTÁ VACÍO", style = MaterialTheme.typography.h5, color = Color.Black)
+                        Text("TU CARRITO ESTÁ VACIO", style = MaterialTheme.typography.h5, color = Color.Black)
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
                             onClick = { navController.navigate("catalog") },

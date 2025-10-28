@@ -4,7 +4,6 @@ import com.example.apptiendaeval2.R
 
 object ProductRepository {
     private val products = listOf(
-        // POLERAS
         Producto(
             id = 1,
             nombre = "Polera Negra Forever",
@@ -47,7 +46,6 @@ object ProductRepository {
             ),
             tallas = listOf("S","M","L","XL")
         ),
-        // POLERONES
         Producto(
             id = 4,
             nombre = "Poleron Cropped Gris",
@@ -146,7 +144,6 @@ object ProductRepository {
             ),
             tallas = listOf("S","M","L","XL")
         ),
-        // PANTALONES
         Producto(
             id = 11,
             nombre = "Jeans vaquero Gris",
@@ -189,8 +186,6 @@ object ProductRepository {
             ),
             tallas = listOf("S","M","L","XL")
         ),
-
-        // CUADROS DECORATIVOS
         Producto(
             id = 14,
             nombre = "Cuadro Abstracto Moderno",

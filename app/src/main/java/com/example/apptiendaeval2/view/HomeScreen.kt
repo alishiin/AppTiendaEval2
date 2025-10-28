@@ -46,7 +46,6 @@ fun HomeScreen(navController: NavController) {
         )
 
         Column(modifier = Modifier.fillMaxSize()) {
-            // Top bar simulada
             TopAppBar(
                 title = {
                     Text(

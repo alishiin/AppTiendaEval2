@@ -35,40 +35,31 @@ fun CatalogScreen(navController: NavController, cartViewModel: CartViewModel) {
     val categorias = ProductRepository.getCategories()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fondo igual al Login
         Image(
             painter = painterResource(id = R.drawable.fondo_godines),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-
-        // Capa semi-transparente
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White.copy(alpha = 0.35f))
         )
-
-        // Contenido del catálogo
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp)
         ) {
-            // Título
             Text(
-                text = "CATÁLOGO DE PRODUCTOS",
+                text = "CATALOGO DE PRODUCTOS",
                 style = MaterialTheme.typography.h4,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-
-            // Menú de categorías
             LazyRow(
                 modifier = Modifier.padding(bottom = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Botón "Todos"
                 item {
                     Button(
                         onClick = { selectedCategory = null },
@@ -83,8 +74,6 @@ fun CatalogScreen(navController: NavController, cartViewModel: CartViewModel) {
                         )
                     }
                 }
-
-                // Botones de categorías
                 items(categorias.size) { index ->
                     val categoria = categorias[index]
                     Button(
@@ -101,8 +90,6 @@ fun CatalogScreen(navController: NavController, cartViewModel: CartViewModel) {
                     }
                 }
             }
-
-            // Lista de productos filtrados
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {

@@ -34,7 +34,7 @@ fun ErrorScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                "Puede ser por falta de stock o error en el método de pago.",
+                "Puede ser por falta de stock o error en el metodo de pago.",
                 color = Color.Black
             )
             Spacer(modifier = Modifier.height(32.dp))
@@ -54,7 +54,7 @@ fun ErrorScreen(navController: NavController) {
                     onClick = { navController.navigate("catalog") },
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
                 ) {
-                    Text("Volver al Catálogo", color = Color.Black)
+                    Text("Volver al Catalogo", color = Color.Black)
                 }
             }
         }

@@ -19,7 +19,6 @@ import com.example.apptiendaval2.model.ProductRepository
 import com.example.apptiendaeval2.R
 import androidx.compose.ui.graphics.Color
 
-// TopAppBar personalizado con estilo urbano
 @Composable
 fun MyTopAppBar(
     title: String,
@@ -40,7 +39,7 @@ fun MyTopAppBar(
         },
         navigationIcon = navIcon,
         actions = actions,
-        backgroundColor = Color(0xFF2C2C2C), // Gris oscuro urbano
+        backgroundColor = Color(0xFF2C2C2C),
         contentColor = Color.White,
         elevation = 8.dp
     )
@@ -63,15 +62,12 @@ fun BackOfficeScreen(navController: NavController) {
         }
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
-            // Fondo
             Image(
                 painter = painterResource(id = R.drawable.fondo_godines),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
-
-            // Contenido encima del fondo
             LazyColumn(
                 modifier = Modifier
                     .padding(padding)
@@ -98,7 +94,7 @@ fun BackOfficeScreen(navController: NavController) {
 
                             Text(producto.nombre, style = MaterialTheme.typography.h6)
                             Text("Precio: \$${producto.precio}")
-                            Text("Descripción: ${producto.descripcion}")
+                            Text("Descripcion: ${producto.descripcion}")
                         }
                     }
                 }

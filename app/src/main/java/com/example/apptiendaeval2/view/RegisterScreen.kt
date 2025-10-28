@@ -83,7 +83,7 @@ fun RegisterScreen(navController: NavController) {
                 OutlinedTextField(
                     value = direccion,
                     onValueChange = { direccion = it },
-                    label = { Text("Dirección") },
+                    label = { Text("Direccion") },
                     colors = blackFieldColors
                 )
                 OutlinedTextField(

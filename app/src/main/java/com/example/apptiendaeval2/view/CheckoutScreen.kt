@@ -29,7 +29,7 @@ fun CheckoutScreen(navController: NavController, cartViewModel: CartViewModel) {
                 title = { Text("Boleta de Compra", color = Color.White) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás", tint = Color.White)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Atras", tint = Color.White)
                     }
                 },
                 backgroundColor = Color.Black
@@ -62,7 +62,6 @@ fun CheckoutScreen(navController: NavController, cartViewModel: CartViewModel) {
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            // Imagen del producto
                             Image(
                                 painter = painterResource(id = item.producto.imagenResId),
                                 contentDescription = item.producto.nombre,

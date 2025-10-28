@@ -28,13 +28,13 @@ fun SuccessScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "Tu compra se ha realizado con éxito",
+                "Tu compra se ha realizado con exito",
                 style = MaterialTheme.typography.h6,
                 color = Color.Black
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                "Gracias por tu compra. Tu pedido será procesado pronto.",
+                "Gracias por tu compra. Tu pedido sera procesado pronto.",
                 color = Color.Black
             )
             Spacer(modifier = Modifier.height(32.dp))

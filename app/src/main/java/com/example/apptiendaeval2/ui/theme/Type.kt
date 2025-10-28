@@ -84,14 +84,12 @@ val Typography = Typography(
     )
 )
 
-// Estilo personalizado para el título de CrimeWave
 val CrimeWaveTitle = TextStyle(
     fontFamily = DevilNetFontFamily,
     fontWeight = FontWeight.Normal,
     fontSize = 18.sp
 )
 
-// Estilos adicionales con Futura Bold para elementos destacados
 val FuturaButtonStyle = TextStyle(
     fontFamily = FuturaBoldFontFamily,
     fontWeight = FontWeight.Bold,

@@ -49,7 +49,7 @@ fun LoginScreen(navController: NavController) {
                     .padding(24.dp)
             ) {
                 Text(
-                    "INICIO DE SESIÓN",
+                    "INICIO DE SESI0N",
                     style = MaterialTheme.typography.h4,
                     color = Color.Black
                 )
@@ -116,7 +116,7 @@ fun LoginScreen(navController: NavController) {
 
                 TextButton(onClick = { navController.navigate("register") }) {
                     Text(
-                        text = "¿NO TIENES CUENTA? REGÍSTRATE",
+                        text = "¿NO TIENES CUENTA? REGISTRATE",
                         color = Color.Black,
                         style = MaterialTheme.typography.button
                     )

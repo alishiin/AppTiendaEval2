@@ -10,5 +10,5 @@ data class Producto(
     val imagenesResId: List<Int> = emptyList(),
     val valoraciones: List<Valoracion> = emptyList(),
     val tallas: List<String> = listOf("S","M","L","XL"),
-    val medidas: List<String> = emptyList() // Para cuadros: medidas en cm
+    val medidas: List<String> = emptyList()
 )

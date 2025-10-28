@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 import com.example.apptiendaval2.model.Producto
 import com.example.apptiendaval2.viewmodel.CartViewModel
 
-data class CartItem(val producto: Producto, val cantidad: Int = 1) // cantidad ahora es val
+data class CartItem(val producto: Producto, val cantidad: Int = 1)
 
 class CartViewModel : ViewModel() {
     private val _items = MutableStateFlow<List<CartItem>>(emptyList())
@@ -17,7 +17,7 @@ class CartViewModel : ViewModel() {
         val index = current.indexOfFirst { it.producto.id == producto.id }
         if (index != -1) {
             val existing = current[index]
-            current[index] = existing.copy(cantidad = existing.cantidad + 1) // crear nuevo objeto
+            current[index] = existing.copy(cantidad = existing.cantidad + 1)
         } else {
             current.add(CartItem(producto, 1))
         }
@@ -29,7 +29,7 @@ class CartViewModel : ViewModel() {
         val index = current.indexOfFirst { it.producto.id == productId }
         if (index != -1) {
             if (cantidad <= 0) current.removeAt(index)
-            else current[index] = current[index].copy(cantidad = cantidad) // crear nuevo objeto
+            else current[index] = current[index].copy(cantidad = cantidad)
         }
         _items.value = current
     }

@@ -47,7 +47,7 @@ fun ProductDetailsScreen(
                     contentColor = Color.White
                 )
             ) {
-                Text("VOLVER AL CATÁLOGO", style = FuturaButtonStyle)
+                Text("VOLVER AL CATALOGO", style = FuturaButtonStyle)
             }
         }
         return
@@ -67,7 +67,7 @@ fun ProductDetailsScreen(
                 title = { Text(producto.nombre.uppercase(), style = FuturaProductTitle, color = Color.White) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás", tint = Color.White)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Atras", tint = Color.White)
                     }
                 },
                 backgroundColor = Color.Black,
@@ -129,12 +129,11 @@ fun ProductDetailsScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            Text("DESCRIPCIÓN", style = MaterialTheme.typography.h5, color = Color.Black)
+            Text("DESCRIPCION", style = MaterialTheme.typography.h5, color = Color.Black)
             Text(producto.descripcion.uppercase(), style = MaterialTheme.typography.body1, modifier = Modifier.padding(top = 6.dp), color = Color.Black)
 
             Spacer(Modifier.height(12.dp))
 
-            // Mostrar tallas o medidas según la categoría
             if (producto.medidas.isNotEmpty()) {
                 Text("MEDIDAS DISPONIBLES", style = MaterialTheme.typography.h5, color = Color.Black)
                 LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
@@ -175,7 +174,7 @@ fun ProductDetailsScreen(
 
             Text("VALORACIONES", style = MaterialTheme.typography.h5, color = Color.Black)
             if (producto.valoraciones.isEmpty()) {
-                Text("AÚN NO HAY VALORACIONES.", style = MaterialTheme.typography.body1, color = Color.Black)
+                Text("AUN NO HAY VALORACIONES.", style = MaterialTheme.typography.body1, color = Color.Black)
             } else {
                 producto.valoraciones.forEach { v -> RatingRow(v) }
             }

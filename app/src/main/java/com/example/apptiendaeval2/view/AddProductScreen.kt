@@ -58,7 +58,7 @@ fun AddProductScreen(navController: NavController) {
             OutlinedTextField(
                 value = descripcion,
                 onValueChange = { descripcion = it },
-                label = { Text("Descripción") },
+                label = { Text("Descripcion") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = blackFieldColors
             )
