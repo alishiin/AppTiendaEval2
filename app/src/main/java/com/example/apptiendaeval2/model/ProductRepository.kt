@@ -3,7 +3,8 @@ package com.example.apptiendaval2.model
 import com.example.apptiendaeval2.R
 
 object ProductRepository {
-    private val products = listOf(
+    private val _products by lazy {
+        listOf(
         Producto(
             id = 1,
             nombre = "Polera Negra Forever",
@@ -25,7 +26,7 @@ object ProductRepository {
             descripcion = "Polera de algodon 100% UnderGround.",
             imagenResId = R.drawable.polera_azul,
             categoria = Categoria.POLERAS,
-            imagenesResId = listOf(R.drawable.polera_negra, R.drawable.polera_dragon),
+            imagenesResId = listOf(R.drawable.polera_negra_dark, R.drawable.polera_negro_gris),
             valoraciones = listOf(
                 Valoracion("Carlillos777", 4, "Comoda, me quedo de pana mi rey."),
                 Valoracion("momo", 4, "muy buena, vaneado pa.")
@@ -39,7 +40,7 @@ object ProductRepository {
             descripcion = "Polera de poliester de RyF Pegado",
             imagenResId = R.drawable.polera_gris,
             categoria = Categoria.POLERAS,
-            imagenesResId = listOf(R.drawable.polera_mujer, R.drawable.polera_auto),
+            imagenesResId = listOf(R.drawable.polera_dragon, R.drawable.polera_negra_dark),
             valoraciones = listOf(
                 Valoracion("Ferguson",5,"está muy buena, la recomiendo chat"),
                 Valoracion("Hater12", 2, "El disenio estamu y mal porke estA pegao dislaics")
@@ -53,7 +54,7 @@ object ProductRepository {
             descripcion = "poleron con capucha cropped Intervalans",
             imagenResId = R.drawable.poleron_gris,
             categoria = Categoria.POLERONES,
-            imagenesResId = listOf(R.drawable.polera_negra, R.drawable.polera_gris),
+            imagenesResId = listOf(R.drawable.polera_gris, R.drawable.polera_negra_estampado),
             valoraciones = listOf(
                 Valoracion("Corazun7.7",4,"muy buen producto, y la calidad es un 10"),
                 Valoracion("MooaaY",4,"no me quedó bien amiguis, como lo devuelvo?")
@@ -190,104 +191,71 @@ object ProductRepository {
             id = 14,
             nombre = "Cuadro Abstracto Moderno",
             precio = 24990,
-            descripcion = "Cuadro abstracto con diseños modernos, impreso en lienzo de alta calidad con marco de madera",
+            descripcion = "Cuadro abstracto",
             imagenResId = R.drawable.cuadro1,
             categoria = Categoria.CUADROS,
-            imagenesResId = listOf(R.drawable.cuadro1, R.drawable.cuadro2),
-            valoraciones = listOf(
-                Valoracion("ArtLover", 5, "Hermoso cuadro, la calidad del lienzo es excelente"),
-                Valoracion("ModernDecor", 4, "Perfecto para mi sala, combina con todo")
-            ),
-            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
+            imagenesResId = emptyList(),
+            valoraciones = emptyList(),
+            tallas = emptyList(),
+            medidas = listOf("30cmx30cm", "45cmx60cm")
         ),
         Producto(
             id = 15,
             nombre = "Cuadro Paisaje Natural",
             precio = 27990,
-            descripcion = "Hermoso paisaje natural, colores vivos y realistas, ideal para crear ambiente relajante",
+            descripcion = "Paisaje natural",
             imagenResId = R.drawable.cuadro2,
             categoria = Categoria.CUADROS,
-            imagenesResId = listOf(R.drawable.cuadro2, R.drawable.cuadro3),
-            valoraciones = listOf(
-                Valoracion("NatureLover", 5, "Los colores son increíbles, parece real"),
-                Valoracion("HomeDecor", 4, "Llegó perfectamente embalado, muy recomendado")
-            ),
-            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
+            imagenesResId = emptyList(),
+            valoraciones = emptyList(),
+            tallas = emptyList(),
+            medidas = listOf("30cmx30cm", "45cmx60cm")
         ),
         Producto(
             id = 16,
             nombre = "Cuadro Minimalista",
             precio = 19990,
-            descripcion = "Diseño minimalista elegante, perfecto para espacios modernos y sofisticados",
+            descripcion = "Diseño minimalista",
             imagenResId = R.drawable.cuadro3,
             categoria = Categoria.CUADROS,
-            imagenesResId = listOf(R.drawable.cuadro3, R.drawable.cuadro4),
-            valoraciones = listOf(
-                Valoracion("MinimalStyle", 5, "Exactamente lo que buscaba para mi oficina"),
-                Valoracion("CleanDesign", 4, "Simple pero elegante, me encanta")
-            ),
-            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
+            imagenesResId = emptyList(),
+            valoraciones = emptyList(),
+            tallas = emptyList(),
+            medidas = listOf("30cmx30cm", "45cmx60cm")
         ),
-        Producto(
-            id = 17,
-            nombre = "Cuadro Floral Vintage",
-            precio = 22990,
-            descripcion = "Hermosas flores con estilo vintage, detalles delicados pintados con técnica profesional",
-            imagenResId = R.drawable.cuadro4,
-            categoria = Categoria.CUADROS,
-            imagenesResId = listOf(R.drawable.cuadro4, R.drawable.cuadro5),
-            valoraciones = listOf(
-                Valoracion("VintageVibes", 5, "Precioso, le da un toque especial a mi dormitorio"),
-                Valoracion("FlowerPower", 4, "Los detalles florales son hermosos")
-            ),
-            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
-        ),
-        Producto(
-            id = 18,
-            nombre = "Cuadro Geométrico Colorido",
-            precio = 25990,
-            descripcion = "Formas geométricas vibrantes, diseño contemporáneo que aporta energía a cualquier espacio",
-            imagenResId = R.drawable.cuadro5,
-            categoria = Categoria.CUADROS,
-            imagenesResId = listOf(R.drawable.cuadro5, R.drawable.cuadro6),
-            valoraciones = listOf(
-                Valoracion("GeometryFan", 5, "Los colores son súper vibrantes, me encanta"),
-                Valoracion("ModernArt", 4, "Perfecto para mi sala de estar moderna")
-            ),
-            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
-        ),
-        Producto(
-            id = 19,
-            nombre = "Cuadro Urbano Industrial",
-            precio = 26990,
-            descripcion = "Motivos urbanos con texturas industriales, perfecto para lofts y espacios contemporáneos",
-            imagenResId = R.drawable.cuadro6,
-            categoria = Categoria.CUADROS,
-            imagenesResId = listOf(R.drawable.cuadro6, R.drawable.cuadro7),
-            valoraciones = listOf(
-                Valoracion("UrbanStyle", 5, "Queda perfecto en mi loft, muy industrial"),
-                Valoracion("CityVibes", 4, "La textura se ve muy real, excelente calidad")
-            ),
-            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
-        ),
-        Producto(
-            id = 20,
-            nombre = "Cuadro Retro Vintage",
-            precio = 21990,
-            descripcion = "Estética retro con tonos cálidos, evoca nostalgia y calidez en tu hogar",
-            imagenResId = R.drawable.cuadro7,
-            categoria = Categoria.CUADROS,
-            imagenesResId = listOf(R.drawable.cuadro7, R.drawable.cuadro1),
-            valoraciones = listOf(
-                Valoracion("RetroLover", 5, "Me transporta a otra época, hermoso"),
-                Valoracion("WarmTones", 4, "Los tonos cálidos crean un ambiente acogedor")
-            ),
-            medidas = listOf("30cmx30cm", "30cmx45cm", "45cmx60cm", "70cmx55cm")
+
         )
-    )
+    }
+
+    private val products get() = _products
+
+    // Cache para categorías
+    private val _categoriesCache by lazy { Categoria.entries.toList() }
+
+    // Cache optimizado - cuadros separados para mejor rendimiento
+    private val _productsByCategory by lazy {
+        val allProducts = _products
+        val nonCuadros = allProducts.filter { it.categoria != Categoria.CUADROS }
+        val cuadros = allProducts.filter { it.categoria == Categoria.CUADROS }.take(3)
+
+        val grouped = nonCuadros.groupBy { it.categoria }.toMutableMap()
+        grouped[Categoria.CUADROS] = cuadros
+        grouped.toMap()
+    }
+
+    // Cache separado para cuadros limitado
+    private val _limitedCuadros by lazy {
+        _products.filter { it.categoria == Categoria.CUADROS }.take(3)
+    }
 
     fun getAll() = products
     fun getById(id: Int) = products.find { it.id == id }
-    fun getByCategory(categoria: Categoria) = products.filter { it.categoria == categoria }
-    fun getCategories() = Categoria.entries.toList()
+    fun getByCategory(categoria: Categoria) = _productsByCategory[categoria] ?: emptyList()
+    fun getCategories() = _categoriesCache
+
+    // Función optimizada específica para cuadros (limitada a 3)
+    fun getCuadros() = _limitedCuadros
+
+    // Función para obtener cuadros completos cuando sea necesario
+    fun getAllCuadros() = _limitedCuadros
 }

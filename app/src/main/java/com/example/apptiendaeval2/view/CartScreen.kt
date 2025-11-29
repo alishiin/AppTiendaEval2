@@ -27,25 +27,52 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
     val cartItems by cartViewModel.items.collectAsState()
     val total = cartItems.sumOf { it.producto.precio * it.cantidad }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = com.example.apptiendaeval2.R.drawable.fondo_godines),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "CARRITO DE COMPRAS",
+                        style = MaterialTheme.typography.h6,
+                        color = Color.White
+                    )
+                },
+                actions = {
+                    TextButton(onClick = { navController.navigate("catalog") }) {
+                        Text("CATÁLOGO", color = Color.White)
+                    }
+                    TextButton(onClick = { navController.navigate("home") }) {
+                        Text("INICIO", color = Color.White)
+                    }
+                    TextButton(onClick = { navController.navigate("login") }) {
+                        Text("CERRAR SESIÓN", color = Color.White)
+                    }
+                },
+                backgroundColor = Color.Black,
+                contentColor = Color.White
+            )
+        }
+    ) { padding ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(id = com.example.apptiendaeval2.R.drawable.fondo_godines),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White.copy(alpha = 0.35f))
-        )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White.copy(alpha = 0.35f))
+            )
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp)
+            ) {
             if (cartItems.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -66,12 +93,19 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
                     }
                 }
             } else {
+                // Agrupar items por producto
+                val groupedItems = cartItems.groupBy { it.producto.id }
+
                 LazyColumn(modifier = Modifier.weight(1f)) {
-                    items(cartItems.size) { index ->
-                        val item = cartItems[index]
-                        CartItemRow(item, onQuantityChange = { newQty ->
-                            cartViewModel.updateQuantity(item.producto.id, newQty)
-                        })
+                    items(groupedItems.size) { groupIndex ->
+                        val productGroup = groupedItems.values.toList()[groupIndex]
+                        ProductGroupCard(
+                            productGroup = productGroup,
+                            onQuantityChange = { talla, newQty ->
+                                val productId = productGroup.first().producto.id
+                                cartViewModel.updateQuantity(productId, talla, newQty)
+                            }
+                        )
                     }
                 }
 
@@ -115,51 +149,131 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
             }
         }
     }
+    }
 }
 
 @Composable
-fun CartItemRow(item: CartItem, onQuantityChange: (Int) -> Unit) {
+fun ProductGroupCard(
+    productGroup: List<CartItem>,
+    onQuantityChange: (String, Int) -> Unit
+) {
+    val producto = productGroup.first().producto
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp),
-        elevation = 2.dp
+        elevation = 4.dp
     ) {
-        Row(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.padding(12.dp)
         ) {
-            Image(
-                painter = painterResource(id = item.producto.imagenResId),
-                contentDescription = item.producto.nombre,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.size(70.dp)
-            )
+            // Encabezado del producto
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = producto.imagenResId),
+                    contentDescription = producto.nombre,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(70.dp)
+                )
 
-            Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(12.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
-                Text(item.producto.nombre.uppercase(), style = FuturaProductTitle, color = Color.Black)
-                Text("PRECIO: \$${item.producto.precio}", style = FuturaPrice, color = Color(0xFF006400))
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    OutlinedButton(
-                        onClick = { if (item.cantidad > 1) onQuantityChange(item.cantidad - 1) },
-                        contentPadding = PaddingValues(horizontal = 8.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
-                    ) { Text("-", style = MaterialTheme.typography.button, color = Color.Black) }
-
-                    Text(text = item.cantidad.toString(), style = MaterialTheme.typography.h6, modifier = Modifier.padding(horizontal = 8.dp), color = Color.Black)
-
-                    OutlinedButton(
-                        onClick = { onQuantityChange(item.cantidad + 1) },
-                        contentPadding = PaddingValues(horizontal = 8.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
-                    ) { Text("+", style = MaterialTheme.typography.button, color = Color.Black) }
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = producto.nombre.uppercase(),
+                        style = FuturaProductTitle,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = "PRECIO: \$${producto.precio}",
+                        style = FuturaPrice,
+                        color = Color(0xFF006400)
+                    )
                 }
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // Mostrar cada talla por separado
+            productGroup.forEach { item ->
+                TallaRow(
+                    item = item,
+                    onQuantityChange = onQuantityChange
+                )
+                Spacer(Modifier.height(8.dp))
             }
         }
     }
 }
+
+@Composable
+fun TallaRow(
+    item: CartItem,
+    onQuantityChange: (String, Int) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = 2.dp,
+        backgroundColor = Color.Gray.copy(alpha = 0.1f)
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp)
+        ) {
+            // Mostrar talla/medida
+            Text(
+                text = if (item.producto.categoria.displayName == "Cuadros") "MEDIDA: ${item.talla}" else "TALLA: ${item.talla}",
+                style = MaterialTheme.typography.subtitle2,
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            // Controles de cantidad
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = { onQuantityChange(item.talla, item.cantidad - 1) },
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
+                ) {
+                    Text("-", style = MaterialTheme.typography.button, color = Color.Black)
+                }
+
+                Text(
+                    text = "Cant: ${item.cantidad}",
+                    style = MaterialTheme.typography.subtitle2,
+                    color = Color.Black,
+                    modifier = Modifier.weight(1f)
+                )
+
+                OutlinedButton(
+                    onClick = { onQuantityChange(item.talla, item.cantidad + 1) },
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
+                ) {
+                    Text("+", style = MaterialTheme.typography.button, color = Color.Black)
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // Botón de eliminar talla
+            OutlinedButton(
+                onClick = { onQuantityChange(item.talla, 0) },
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = Color.Red,
+                    backgroundColor = Color.Transparent
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("ELIMINAR TALLA", style = MaterialTheme.typography.caption, color = Color.Red)
+            }
+        }
+    }
+}
+
+

@@ -49,9 +49,15 @@ fun HomeScreen(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "CrimeWave",
-                        style = CrimeWaveTitle
+                        text = "CRIMEWAVE",
+                        style = CrimeWaveTitle,
+                        color = Color.White
                     )
+                },
+                actions = {
+                    TextButton(onClick = { navController.navigate("login") }) {
+                        Text("CERRAR SESIÓN", color = Color.White)
+                    }
                 },
                 backgroundColor = Color.Black,
                 contentColor = Color.White

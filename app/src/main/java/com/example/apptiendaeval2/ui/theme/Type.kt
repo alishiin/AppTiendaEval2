@@ -87,7 +87,7 @@ val Typography = Typography(
 val CrimeWaveTitle = TextStyle(
     fontFamily = DevilNetFontFamily,
     fontWeight = FontWeight.Normal,
-    fontSize = 18.sp
+    fontSize = 24.sp
 )
 
 val FuturaButtonStyle = TextStyle(
@@ -113,4 +113,5 @@ val FuturaCategoryButton = TextStyle(
     fontWeight = FontWeight.Bold,
     fontSize = 14.sp
 )
+
 

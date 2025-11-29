@@ -9,16 +9,20 @@ data class User(
 
 object UserRepository {
     private val users = mutableListOf<User>()
+    private val userCredentials = mutableMapOf<String, String>()
 
     init {
-        users.add(User("Test User", "a@a.cl", "123123"))
+        val testUser = User("Test User", "a@a.cl", "123123")
+        users.add(testUser)
+        userCredentials[testUser.email] = testUser.password
     }
 
     fun addUser(user: User) {
         users.add(user)
+        userCredentials[user.email] = user.password
     }
 
     fun validateUser(email: String, password: String): Boolean {
-        return users.any { it.email == email && it.password == password }
+        return userCredentials[email] == password
     }
 }

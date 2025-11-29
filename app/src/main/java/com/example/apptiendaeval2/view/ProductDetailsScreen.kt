@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.apptiendaval2.model.ProductRepository
 import com.example.apptiendaval2.model.Valoracion
+import com.example.apptiendaval2.model.Categoria
 import com.example.apptiendaval2.viewmodel.CartViewModel
 import com.example.apptiendaeval2.ui.theme.FuturaProductTitle
 import com.example.apptiendaeval2.ui.theme.FuturaPrice
@@ -54,12 +56,16 @@ fun ProductDetailsScreen(
     }
 
     var selectedImage by remember { mutableStateOf(producto.imagenResId) }
-    var selectedTalla by remember {
+    var selectedTalla by remember(producto.id) {
         mutableStateOf(
-            if (producto.medidas.isNotEmpty()) producto.medidas.firstOrNull() ?: "30cmx30cm"
-            else producto.tallas.firstOrNull() ?: "S"
+            when {
+                producto.medidas.isNotEmpty() -> producto.medidas.first()
+                producto.tallas.isNotEmpty() -> producto.tallas.first()
+                else -> "S"
+            }
         )
     }
+    var cantidad by remember { mutableStateOf(1) }
 
     Scaffold(
         topBar = {
@@ -75,12 +81,13 @@ fun ProductDetailsScreen(
             )
         }
     ) { padding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(padding)
-                .padding(16.dp)
-                .fillMaxSize()
+                .fillMaxSize(),
+            contentPadding = PaddingValues(16.dp)
         ) {
+            item {
             Card(
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
@@ -98,18 +105,23 @@ fun ProductDetailsScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                items(producto.imagenesResId.size + 1) { index ->
-                    val imgRes =
-                        if (index == 0) producto.imagenResId else producto.imagenesResId.getOrNull(index - 1)
-                    if (imgRes != null) {
+            // Solo mostrar imágenes adicionales si no es un cuadro
+            if (producto.categoria != Categoria.CUADROS && producto.imagenesResId.isNotEmpty()) {
+                val allImages = remember(producto.id) {
+                    listOf(producto.imagenResId) + producto.imagenesResId.take(2)
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    allImages.forEach { imgRes ->
                         Card(
                             modifier = Modifier
-                                .size(80.dp)
-                                .padding(4.dp)
+                                .size(60.dp)
                                 .clickable { selectedImage = imgRes },
                             shape = RoundedCornerShape(6.dp),
-                            elevation = 2.dp
+                            elevation = 1.dp
                         ) {
                             Image(
                                 painter = painterResource(imgRes),
@@ -119,6 +131,8 @@ fun ProductDetailsScreen(
                         }
                     }
                 }
+
+                Spacer(Modifier.height(12.dp))
             }
 
             Spacer(Modifier.height(12.dp))
@@ -136,33 +150,47 @@ fun ProductDetailsScreen(
 
             if (producto.medidas.isNotEmpty()) {
                 Text("MEDIDAS DISPONIBLES", style = MaterialTheme.typography.h5, color = Color.Black)
-                LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
-                    items(producto.medidas.size) { index ->
-                        val medida = producto.medidas[index]
+                val medidas = remember(producto.id) { producto.medidas }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    medidas.forEach { medida ->
                         OutlinedButton(
                             onClick = { selectedTalla = medida },
                             colors = ButtonDefaults.outlinedButtonColors(
                                 contentColor = if (selectedTalla == medida) Color.White else Color.Black,
                                 backgroundColor = if (selectedTalla == medida) Color.Black else Color.Transparent
                             ),
-                            modifier = Modifier.padding(end = 8.dp)
+                            modifier = Modifier.weight(1f)
                         ) {
-                            Text(medida, style = MaterialTheme.typography.button)
+                            Text(
+                                text = medida,
+                                style = MaterialTheme.typography.caption,
+                                maxLines = 1
+                            )
                         }
                     }
                 }
-            } else {
+            } else if (producto.tallas.isNotEmpty()) {
                 Text("TALLAS DISPONIBLES", style = MaterialTheme.typography.h5, color = Color.Black)
-                LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
-                    items(producto.tallas.size) { index ->
-                        val talla = producto.tallas[index]
+                val tallas = remember(producto.id) { producto.tallas }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    tallas.forEach { talla ->
                         OutlinedButton(
                             onClick = { selectedTalla = talla },
                             colors = ButtonDefaults.outlinedButtonColors(
                                 contentColor = if (selectedTalla == talla) Color.White else Color.Black,
                                 backgroundColor = if (selectedTalla == talla) Color.Black else Color.Transparent
                             ),
-                            modifier = Modifier.padding(end = 8.dp)
+                            modifier = Modifier.weight(1f)
                         ) {
                             Text(talla, style = MaterialTheme.typography.button)
                         }
@@ -170,13 +198,71 @@ fun ProductDetailsScreen(
                 }
             }
 
+            Spacer(Modifier.height(16.dp))
+
+            // Selector de cantidad
+            Text("CANTIDAD", style = MaterialTheme.typography.h5, color = Color.Black)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Botón menos
+                OutlinedButton(
+                    onClick = { if (cantidad > 1) cantidad-- },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color.Black,
+                        backgroundColor = Color.Transparent
+                    ),
+                    modifier = Modifier.size(48.dp)
+                ) {
+                    Text("-", style = MaterialTheme.typography.h5)
+                }
+
+                // Mostrar cantidad actual
+                Card(
+                    modifier = Modifier.weight(1f),
+                    elevation = 2.dp
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = cantidad.toString(),
+                            style = MaterialTheme.typography.h5,
+                            color = Color.Black
+                        )
+                    }
+                }
+
+                // Botón más
+                OutlinedButton(
+                    onClick = { if (cantidad < 99) cantidad++ },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color.Black,
+                        backgroundColor = Color.Transparent
+                    ),
+                    modifier = Modifier.size(48.dp)
+                ) {
+                    Text("+", style = MaterialTheme.typography.h5)
+                }
+            }
+
             Spacer(Modifier.height(12.dp))
 
-            Text("VALORACIONES", style = MaterialTheme.typography.h5, color = Color.Black)
-            if (producto.valoraciones.isEmpty()) {
-                Text("AUN NO HAY VALORACIONES.", style = MaterialTheme.typography.body1, color = Color.Black)
-            } else {
-                producto.valoraciones.forEach { v -> RatingRow(v) }
+            if (producto.categoria != Categoria.CUADROS) {
+                Text("VALORACIONES", style = MaterialTheme.typography.h5, color = Color.Black)
+                if (producto.valoraciones.isEmpty()) {
+                    Text("AUN NO HAY VALORACIONES.", style = MaterialTheme.typography.body1, color = Color.Black)
+                } else {
+                    producto.valoraciones.take(2).forEach { v -> RatingRow(v) }
+                }
+
             }
 
             Spacer(Modifier.height(16.dp))
@@ -187,7 +273,12 @@ fun ProductDetailsScreen(
             ) {
                 Button(
                     modifier = Modifier.weight(1f),
-                    onClick = { cartViewModel.addProduct(producto) },
+                    onClick = {
+                        repeat(cantidad) {
+                            cartViewModel.addProduct(producto, selectedTalla)
+                        }
+                        cantidad = 1 // Reset cantidad después de agregar
+                    },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.Black,
                         contentColor = Color.White
@@ -207,6 +298,10 @@ fun ProductDetailsScreen(
                     Text("IR AL CARRITO", style = FuturaButtonStyle)
                 }
             }
+
+            // Agregar espacio adicional al final para asegurar que los botones sean visibles
+            Spacer(Modifier.height(32.dp))
+        }
         }
     }
 }
