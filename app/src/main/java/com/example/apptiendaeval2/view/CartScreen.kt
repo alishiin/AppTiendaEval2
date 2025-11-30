@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -86,7 +86,7 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black, contentColor = Color.White),
                             shape = MaterialTheme.shapes.medium
                         ) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Volver", tint = Color.White)
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = Color.White)
                             Spacer(modifier = Modifier.width(8.dp))
                             Text("VOLVER A LA TIENDA", style = FuturaButtonStyle, color = Color.White)
                         }
@@ -224,7 +224,7 @@ fun TallaRow(
         ) {
             // Mostrar talla/medida
             Text(
-                text = if (item.producto.categoria.displayName == "Cuadros") "MEDIDA: ${item.talla}" else "TALLA: ${item.talla}",
+                text = "TALLA: ${item.talla}",
                 style = MaterialTheme.typography.subtitle2,
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 8.dp)

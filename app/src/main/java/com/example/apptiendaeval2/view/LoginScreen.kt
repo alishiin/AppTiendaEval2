@@ -13,7 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.apptiendaval2.model.UserRepository
+import com.example.apptiendaeval2.model.UserRepository
 import com.example.apptiendaeval2.R
 import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
 

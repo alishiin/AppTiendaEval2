@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
-import com.example.apptiendaval2.model.ProductRepository
-import com.example.apptiendaval2.model.Categoria
+import com.example.apptiendaeval2.model.ProductRepository
+import com.example.apptiendaeval2.model.Categoria
 import com.example.apptiendaval2.viewmodel.CartViewModel
 import com.example.apptiendaeval2.R
 import androidx.compose.ui.layout.ContentScale
@@ -30,8 +30,7 @@ fun CatalogScreen(navController: NavController, cartViewModel: CartViewModel) {
         derivedStateOf {
             val category = selectedCategory
             when (category) {
-                null -> ProductRepository.getAll().take(15) // Limitar productos generales
-                Categoria.CUADROS -> ProductRepository.getCuadros().take(3) // Solo 3 cuadros máximo
+                null -> ProductRepository.getAll().take(15)
                 else -> ProductRepository.getByCategory(category)
             }
         }
@@ -150,13 +149,11 @@ fun CatalogScreen(navController: NavController, cartViewModel: CartViewModel) {
                                         style = MaterialTheme.typography.body2,
                                         color = Color(0xFF006400)
                                     )
-                                    if (p.categoria != Categoria.CUADROS) {
-                                        Text(
-                                            text = p.descripcion.uppercase(),
-                                            style = MaterialTheme.typography.caption,
-                                            maxLines = 1
-                                        )
-                                    }
+                                    Text(
+                                        text = p.descripcion.uppercase(),
+                                        style = MaterialTheme.typography.caption,
+                                        maxLines = 1
+                                    )
                                 }
                             }
                         }

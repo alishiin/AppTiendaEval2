@@ -3,7 +3,6 @@ package com.example.apptiendaval2.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -16,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
-import com.example.apptiendaval2.model.ProductRepository
+import com.example.apptiendaeval2.model.ProductRepository
 import com.example.apptiendaeval2.R
 import androidx.compose.ui.graphics.Color
 
@@ -79,10 +78,7 @@ fun BackOfficeScreen(navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(
-                    count = productos.size,
-                    key = { index -> productos[index].id }
-                ) { index ->
+                items(productos.size) { index ->
                     val producto = productos[index]
                     Card(
                         modifier = Modifier.fillMaxWidth(),

@@ -27,7 +27,7 @@ fun AddProductScreen(navController: NavController) {
     var imagenesAdicionales by remember { mutableStateOf("") }
 
     var expanded by remember { mutableStateOf(false) }
-    val categorias = listOf("POLERAS", "PANTALONES", "POLERONES", "CUADROS")
+    val categorias = listOf("POLERAS", "PANTALONES", "POLERONES")
 
     val blackFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         focusedBorderColor = Color.Black,
@@ -150,25 +150,14 @@ fun AddProductScreen(navController: NavController) {
             }
 
             item {
-                if (categoria != "CUADROS") {
-                    OutlinedTextField(
-                        value = tallas,
-                        onValueChange = { tallas = it },
-                        label = { Text("Tallas disponibles (separadas por coma)") },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = blackFieldColors,
-                        placeholder = { Text("S,M,L,XL") }
-                    )
-                } else {
-                    OutlinedTextField(
-                        value = medidas,
-                        onValueChange = { medidas = it },
-                        label = { Text("Medidas disponibles (separadas por coma)") },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = blackFieldColors,
-                        placeholder = { Text("30cmx30cm,30cmx45cm,45cmx60cm,70cmx55cm") }
-                    )
-                }
+                OutlinedTextField(
+                    value = tallas,
+                    onValueChange = { tallas = it },
+                    label = { Text("Tallas disponibles (separadas por coma)") },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = blackFieldColors,
+                    placeholder = { Text("S,M,L,XL") }
+                )
             }
 
             item {
@@ -232,11 +221,7 @@ fun AddProductScreen(navController: NavController) {
                         Text("• Precio: \$$precio", color = Color.Black)
                         Text("• Categoría: $categoria", color = Color.Black)
                         Text("• Stock: $stock unidades", color = Color.Black)
-                        if (categoria != "CUADROS") {
-                            Text("• Tallas: $tallas", color = Color.Black)
-                        } else {
-                            Text("• Medidas: $medidas", color = Color.Black)
-                        }
+                        Text("• Tallas: $tallas", color = Color.Black)
                     }
                 }
             }

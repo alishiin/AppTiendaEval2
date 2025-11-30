@@ -1,4 +1,4 @@
-package com.example.apptiendaval2.model
+package com.example.apptiendaeval2.model
 
 import com.example.apptiendaeval2.R
 
@@ -186,43 +186,7 @@ object ProductRepository {
                 Valoracion("Hater2", 1, "el estampao se me salio despue de lavar el shor")
             ),
             tallas = listOf("S","M","L","XL")
-        ),
-        Producto(
-            id = 14,
-            nombre = "Cuadro Abstracto Moderno",
-            precio = 24990,
-            descripcion = "Cuadro abstracto",
-            imagenResId = R.drawable.cuadro1,
-            categoria = Categoria.CUADROS,
-            imagenesResId = emptyList(),
-            valoraciones = emptyList(),
-            tallas = emptyList(),
-            medidas = listOf("30cmx30cm", "45cmx60cm")
-        ),
-        Producto(
-            id = 15,
-            nombre = "Cuadro Paisaje Natural",
-            precio = 27990,
-            descripcion = "Paisaje natural",
-            imagenResId = R.drawable.cuadro2,
-            categoria = Categoria.CUADROS,
-            imagenesResId = emptyList(),
-            valoraciones = emptyList(),
-            tallas = emptyList(),
-            medidas = listOf("30cmx30cm", "45cmx60cm")
-        ),
-        Producto(
-            id = 16,
-            nombre = "Cuadro Minimalista",
-            precio = 19990,
-            descripcion = "Diseño minimalista",
-            imagenResId = R.drawable.cuadro3,
-            categoria = Categoria.CUADROS,
-            imagenesResId = emptyList(),
-            valoraciones = emptyList(),
-            tallas = emptyList(),
-            medidas = listOf("30cmx30cm", "45cmx60cm")
-        ),
+        )
 
         )
     }
@@ -232,30 +196,13 @@ object ProductRepository {
     // Cache para categorías
     private val _categoriesCache by lazy { Categoria.entries.toList() }
 
-    // Cache optimizado - cuadros separados para mejor rendimiento
+    // Cache para productos por categoría
     private val _productsByCategory by lazy {
-        val allProducts = _products
-        val nonCuadros = allProducts.filter { it.categoria != Categoria.CUADROS }
-        val cuadros = allProducts.filter { it.categoria == Categoria.CUADROS }.take(3)
-
-        val grouped = nonCuadros.groupBy { it.categoria }.toMutableMap()
-        grouped[Categoria.CUADROS] = cuadros
-        grouped.toMap()
-    }
-
-    // Cache separado para cuadros limitado
-    private val _limitedCuadros by lazy {
-        _products.filter { it.categoria == Categoria.CUADROS }.take(3)
+        _products.groupBy { it.categoria }
     }
 
     fun getAll() = products
     fun getById(id: Int) = products.find { it.id == id }
     fun getByCategory(categoria: Categoria) = _productsByCategory[categoria] ?: emptyList()
     fun getCategories() = _categoriesCache
-
-    // Función optimizada específica para cuadros (limitada a 3)
-    fun getCuadros() = _limitedCuadros
-
-    // Función para obtener cuadros completos cuando sea necesario
-    fun getAllCuadros() = _limitedCuadros
 }

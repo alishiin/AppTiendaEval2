@@ -1,5 +1,5 @@
 // UserRepository.kt
-package com.example.apptiendaval2.model
+package com.example.apptiendaeval2.model
 
 data class User(
     val nombre: String,

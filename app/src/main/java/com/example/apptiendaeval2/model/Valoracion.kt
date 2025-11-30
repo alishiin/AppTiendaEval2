@@ -1,4 +1,4 @@
-package com.example.apptiendaval2.model
+package com.example.apptiendaeval2.model
 
 data class Valoracion(
     val usuario: String,

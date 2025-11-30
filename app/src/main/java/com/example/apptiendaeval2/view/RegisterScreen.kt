@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
-import com.example.apptiendaval2.model.User
-import com.example.apptiendaval2.model.UserRepository
+import com.example.apptiendaeval2.model.User
+import com.example.apptiendaeval2.model.UserRepository
 import com.example.apptiendaeval2.R
 
 // Funciones de validación

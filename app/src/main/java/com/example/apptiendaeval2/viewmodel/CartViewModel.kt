@@ -3,7 +3,7 @@ package com.example.apptiendaval2.viewmodel
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import com.example.apptiendaval2.model.Producto
+import com.example.apptiendaeval2.model.Producto
 import com.example.apptiendaval2.viewmodel.CartViewModel
 
 data class CartItem(

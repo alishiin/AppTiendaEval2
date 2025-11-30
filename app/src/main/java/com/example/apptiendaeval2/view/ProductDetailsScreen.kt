@@ -18,9 +18,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.apptiendaval2.model.ProductRepository
-import com.example.apptiendaval2.model.Valoracion
-import com.example.apptiendaval2.model.Categoria
+import com.example.apptiendaeval2.model.ProductRepository
+import com.example.apptiendaeval2.model.Valoracion
+import com.example.apptiendaeval2.model.Categoria
 import com.example.apptiendaval2.viewmodel.CartViewModel
 import com.example.apptiendaeval2.ui.theme.FuturaProductTitle
 import com.example.apptiendaeval2.ui.theme.FuturaPrice
@@ -105,8 +105,7 @@ fun ProductDetailsScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // Solo mostrar imágenes adicionales si no es un cuadro
-            if (producto.categoria != Categoria.CUADROS && producto.imagenesResId.isNotEmpty()) {
+            if (producto.imagenesResId.isNotEmpty()) {
                 val allImages = remember(producto.id) {
                     listOf(producto.imagenResId) + producto.imagenesResId.take(2)
                 }
@@ -255,15 +254,13 @@ fun ProductDetailsScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            if (producto.categoria != Categoria.CUADROS) {
-                Text("VALORACIONES", style = MaterialTheme.typography.h5, color = Color.Black)
-                if (producto.valoraciones.isEmpty()) {
-                    Text("AUN NO HAY VALORACIONES.", style = MaterialTheme.typography.body1, color = Color.Black)
-                } else {
-                    producto.valoraciones.take(2).forEach { v -> RatingRow(v) }
-                }
-
+            Text("VALORACIONES", style = MaterialTheme.typography.h5, color = Color.Black)
+            if (producto.valoraciones.isEmpty()) {
+                Text("AUN NO HAY VALORACIONES.", style = MaterialTheme.typography.body1, color = Color.Black)
+            } else {
+                producto.valoraciones.take(2).forEach { v -> RatingRow(v) }
             }
+
 
             Spacer(Modifier.height(16.dp))
 
