@@ -10,12 +10,12 @@ import androidx.compose.ui.graphics.Color
 private val DarkColorPalette = darkColors(
     primary = Color(0xFF4A4A4A),
     primaryVariant = Color(0xFF3A3A3A),
-    secondary = Pink80
+    secondary = Color.Black
 )
 private val LightColorPalette = lightColors(
     primary = Color(0xFFB0B0B0),
     primaryVariant = Color(0xFF999999),
-    secondary = Pink40
+    secondary = Color.Black
 )
 private val Shapes = Shapes(
     small = RoundedCornerShape(4.dp),

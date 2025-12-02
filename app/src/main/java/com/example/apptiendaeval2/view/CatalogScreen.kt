@@ -42,7 +42,7 @@ fun CatalogScreen(
     }
 
     val categorias = remember(productos) {
-        productos.map { it.categoria }.distinct()
+        productos.mapNotNull { it.categoria }.distinct()
     }
 
     Scaffold(
@@ -94,7 +94,8 @@ fun CatalogScreen(
                         Button(
                             onClick = { selectedCategory = null },
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = if (selectedCategory == null) Color.Black else Color.Gray
+                                backgroundColor = if (selectedCategory == null) Color.Black else Color.Gray,
+                                contentColor = Color.White
                             )
                         ) {
                             Text("TODOS", color = Color.White)
@@ -106,7 +107,8 @@ fun CatalogScreen(
                         Button(
                             onClick = { selectedCategory = cat },
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = if (selectedCategory == cat) Color.Black else Color.Gray
+                                backgroundColor = if (selectedCategory == cat) Color.Black else Color.Gray,
+                                contentColor = Color.White
                             )
                         ) {
                             Text(cat.displayName.uppercase(), color = Color.White)
@@ -136,7 +138,7 @@ fun CatalogScreen(
                     else -> {
                         LazyColumn(verticalArrangement = Arrangement.spacedBy(6.dp)) {
 
-                            items(filteredProductos.size, key = { filteredProductos[it].id }) { i ->
+                            items(filteredProductos.size, key = { filteredProductos[it].id ?: it }) { i ->
 
                                 val p = filteredProductos[i]
 
@@ -144,7 +146,7 @@ fun CatalogScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable {
-                                            navController.navigate("productDetails/${p.id}")
+                                            p.id?.let { navController.navigate("productDetails/$it") }
                                         },
                                     elevation = 2.dp
                                 ) {
@@ -153,10 +155,10 @@ fun CatalogScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
 
-                                        // ✅ IMAGEN DESDE URL
+                                        // ✅ IMAGEN DESDE URL CON PLACEHOLDER
                                         Image(
-                                            painter = rememberAsyncImagePainter(p.imagenUrl),
-                                            contentDescription = p.nombre,
+                                            painter = rememberAsyncImagePainter(p.imagenUrl ?: R.drawable.ic_placeholder),
+                                            contentDescription = p.nombre ?: "Producto",
                                             modifier = Modifier.size(70.dp),
                                             contentScale = ContentScale.Crop
                                         )
@@ -165,19 +167,19 @@ fun CatalogScreen(
 
                                         Column(modifier = Modifier.weight(1f)) {
                                             Text(
-                                                p.nombre.uppercase(),
+                                                text = (p.nombre ?: "Sin nombre").uppercase(),
                                                 style = MaterialTheme.typography.subtitle1,
                                                 maxLines = 1
                                             )
 
                                             Text(
-                                                "\$${p.precio}",
+                                                text = "\$${p.precio ?: 0}",
                                                 style = MaterialTheme.typography.body2,
                                                 color = Color(0xFF006400)
                                             )
 
                                             Text(
-                                                p.descripcion,
+                                                text = p.descripcion ?: "Sin descripción",
                                                 style = MaterialTheme.typography.caption,
                                                 maxLines = 1
                                             )
@@ -185,7 +187,11 @@ fun CatalogScreen(
                                             Spacer(Modifier.height(6.dp))
 
                                             Button(
-                                                onClick = { cartViewModel.addProduct(p) }
+                                                onClick = { cartViewModel.addProduct(p) },
+                                                colors = ButtonDefaults.buttonColors(
+                                                    backgroundColor = Color.Black,
+                                                    contentColor = Color.White
+                                                )
                                             ) {
                                                 Text("Agregar al carrito")
                                             }

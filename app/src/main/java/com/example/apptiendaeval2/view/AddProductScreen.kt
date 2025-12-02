@@ -13,9 +13,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.apptiendaval2.viewmodel.AdminViewModel
+import com.example.apptiendaeval2.model.Producto
 
 @Composable
-fun AddProductScreen(navController: NavController) {
+fun AddProductScreen(
+    navController: NavController,
+    adminViewModel: AdminViewModel = viewModel(),
+    productId: Long? = null
+) {
+    // Estados del formulario
     var nombre by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
@@ -23,7 +31,7 @@ fun AddProductScreen(navController: NavController) {
     var stock by remember { mutableStateOf("") }
     var categoria by remember { mutableStateOf("POLERAS") }
     var tallas by remember { mutableStateOf("S,M,L,XL") }
-    var medidas by remember { mutableStateOf("") }
+    var medidasText by remember { mutableStateOf("") }
     var imagenesAdicionales by remember { mutableStateOf("") }
 
     var expanded by remember { mutableStateOf(false) }
@@ -38,10 +46,47 @@ fun AddProductScreen(navController: NavController) {
         unfocusedLabelColor = Color.Black
     )
 
+    // Estado del ViewModel
+    val loading by adminViewModel.loading.collectAsState()
+    val error by adminViewModel.error.collectAsState()
+
+    // Coleccionar la lista de productos para poder precargar el producto por id
+    val productos by adminViewModel.productos.collectAsState()
+
+    // Flag para evitar reescribir campos si el usuario ya empezó a editar
+    val prefilledState = remember { mutableStateOf(false) }
+
+    // Si estamos editando, prellenar campos cuando el producto esté disponible.
+    // Si aún no está en la lista, lanzar fetchProductos() y esperar a que llegue.
+    LaunchedEffect(productId, productos) {
+        if (productId != null && !prefilledState.value) {
+            var prod = adminViewModel.getProductoById(productId)
+            if (prod == null) {
+                // Intentar obtener la lista desde el backend
+                adminViewModel.fetchProductos()
+            }
+            // Reintentar obtener el producto (la lista podría haberse actualizado)
+            prod = adminViewModel.getProductoById(productId)
+            prod?.let {
+                nombre = it.nombre ?: ""
+                precio = (it.precio ?: 0).toString()
+                descripcion = it.descripcion ?: ""
+                imagenUrl = it.imagenUrl ?: ""
+                // stock no está en el modelo actual del backend -> mantener campo por compatibilidad
+                stock = ""
+                categoria = it.categoria?.name ?: "POLERAS"
+                tallas = it.tallas.joinToString(",")
+                medidasText = it.medidas.joinToString(",")
+                imagenesAdicionales = it.imagenesUrl.joinToString(",")
+                prefilledState.value = true
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Agregar Producto", color = Color.Black) },
+                title = { Text(if (productId == null) "Agregar Producto" else "Editar Producto", color = Color.Black) },
                 backgroundColor = Color.White
             )
         }
@@ -115,10 +160,11 @@ fun AddProductScreen(navController: NavController) {
             }
 
             item {
-                Box {
+                // Dropdown estándar: OutlinedTextField readOnly + IconButton para desplegar
+                Box(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
                         value = categoria,
-                        onValueChange = { },
+                        onValueChange = { /* readOnly */ },
                         readOnly = true,
                         label = { Text("Categoría") },
                         modifier = Modifier
@@ -126,12 +172,15 @@ fun AddProductScreen(navController: NavController) {
                             .clickable { expanded = !expanded },
                         colors = blackFieldColors,
                         trailingIcon = {
-                            Icon(
-                                imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                                contentDescription = "Dropdown"
-                            )
+                            IconButton(onClick = { expanded = !expanded }) {
+                                Icon(
+                                    imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                                    contentDescription = "Toggle"
+                                )
+                            }
                         }
                     )
+
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
@@ -222,6 +271,7 @@ fun AddProductScreen(navController: NavController) {
                         Text("• Categoría: $categoria", color = Color.Black)
                         Text("• Stock: $stock unidades", color = Color.Black)
                         Text("• Tallas: $tallas", color = Color.Black)
+                        Text("• Medidas: $medidasText", color = Color.Black)
                     }
                 }
             }
@@ -234,16 +284,44 @@ fun AddProductScreen(navController: NavController) {
                 ) {
                     Button(
                         onClick = {
-                            // Aquí iría la lógica para agregar el producto
-                            navController.navigate("backoffice")
+                            // Validaciones mínimas
+                            val precioInt = precio.toIntOrNull() ?: 0
+
+                            val producto = Producto(
+                                id = if (productId != null) productId else null,
+                                nombre = nombre,
+                                precio = precioInt,
+                                descripcion = descripcion,
+                                imagenUrl = imagenUrl.ifBlank { null },
+                                // categoría: intentar mapear a enum si corresponde
+                                categoria = try {
+                                    com.example.apptiendaeval2.model.Categoria.valueOf(categoria)
+                                } catch (_: Exception) {
+                                    com.example.apptiendaeval2.model.Categoria.POLERAS
+                                },
+                                imagenesUrl = if (imagenesAdicionales.isBlank()) emptyList() else imagenesAdicionales.split(",").map { it.trim() },
+                                tallas = if (tallas.isBlank()) listOf("S","M","L","XL") else tallas.split(",").map { it.trim() },
+                                medidas = if (medidasText.isBlank()) emptyList() else medidasText.split(",").map { it.trim() }
+                            )
+
+                            if (productId == null) {
+                                adminViewModel.createProducto(producto) {
+                                    navController.navigate("backoffice")
+                                }
+                            } else {
+                                adminViewModel.updateProducto(productId, producto) {
+                                    navController.navigate("backoffice")
+                                }
+                            }
                         },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.Black,
                             contentColor = Color.White
-                        )
+                        ),
+                        enabled = !loading
                     ) {
-                        Text("AGREGAR PRODUCTO (VISUAL)")
+                        Text(if (productId == null) "AGREGAR PRODUCTO" else "ACTUALIZAR PRODUCTO")
                     }
 
                     OutlinedButton(
@@ -257,6 +335,20 @@ fun AddProductScreen(navController: NavController) {
                     }
                 }
             }
+        }
+    }
+
+    // Mostrar loading y errores
+    if (loading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    }
+
+    error?.let { err ->
+        // Simple snackbar inline; en un app real usa ScaffoldState
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            Text(text = "Error: $err", color = Color.Red)
         }
     }
 }

@@ -53,7 +53,8 @@ class CartViewModel : ViewModel() {
         _items.value = current
     }
 
-    fun updateQuantity(productId: Int, talla: String, cantidad: Int) {
+    // Cambié los tipos de productId de Int a Long? para coincidir con Producto.id
+    fun updateQuantity(productId: Long?, talla: String, cantidad: Int) {
         val current = _items.value.toMutableList()
         val index = current.indexOfFirst {
             it.producto.id == productId && it.talla == talla
@@ -67,7 +68,7 @@ class CartViewModel : ViewModel() {
         _items.value = current
     }
 
-    fun removeProduct(productId: Int, talla: String) {
+    fun removeProduct(productId: Long?, talla: String) {
         val current = _items.value.toMutableList()
         current.removeAll {
             it.producto.id == productId && it.talla == talla
@@ -75,7 +76,7 @@ class CartViewModel : ViewModel() {
         _items.value = current
     }
 
-    fun removeOneItem(productId: Int, talla: String) {
+    fun removeOneItem(productId: Long?, talla: String) {
         val current = _items.value.toMutableList()
         val index = current.indexOfFirst {
             it.producto.id == productId && it.talla == talla

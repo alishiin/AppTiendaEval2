@@ -47,7 +47,7 @@ fun ProductDetailsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        producto.nombre.uppercase(),
+                        producto.nombre?.uppercase() ?: "",
                         style = FuturaProductTitle,
                         color = Color.White
                     )
@@ -117,13 +117,13 @@ fun ProductDetailsScreen(
 
                 Spacer(Modifier.height(16.dp))
 
-                Text(producto.nombre, style = FuturaProductTitle)
-                Text("PRECIO: \$${producto.precio}", style = FuturaPrice)
+                Text(producto.nombre ?: "", style = FuturaProductTitle)
+                Text("PRECIO: \$${producto.precio ?: 0}", style = FuturaPrice)
 
                 Spacer(Modifier.height(12.dp))
 
                 Text("DESCRIPCIÓN", style = MaterialTheme.typography.h6)
-                Text(producto.descripcion)
+                Text(producto.descripcion ?: "")
 
                 Spacer(Modifier.height(16.dp))
 
@@ -184,7 +184,11 @@ fun ProductDetailsScreen(
                             cartViewModel.addProduct(producto, selectedTalla)
                         }
                         cantidad = 1
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Black,
+                        contentColor = Color.White
+                    )
                 ) {
                     Text("AGREGAR AL CARRITO", style = FuturaButtonStyle)
                 }
@@ -193,7 +197,11 @@ fun ProductDetailsScreen(
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { navController.navigate("cart") }
+                    onClick = { navController.navigate("cart") },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Black,
+                        contentColor = Color.White
+                    )
                 ) {
                     Text("IR AL CARRITO", style = FuturaButtonStyle)
                 }

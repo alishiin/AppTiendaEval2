@@ -21,7 +21,7 @@ import com.example.apptiendaval2.viewmodel.CartViewModel
 @Composable
 fun CheckoutScreen(navController: NavController, cartViewModel: CartViewModel) {
     val cartItems by cartViewModel.items.collectAsState()
-    val total = cartItems.sumOf { it.producto.precio * it.cantidad }
+    val total = cartItems.sumOf { (it.producto.precio ?: 0) * it.cantidad }
 
     Scaffold(
         topBar = {
@@ -74,11 +74,11 @@ fun CheckoutScreen(navController: NavController, cartViewModel: CartViewModel) {
                             )
 
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(item.producto.nombre, color = Color.Black)
+                                Text(item.producto.nombre ?: "", color = Color.Black)
                                 Text("Cantidad: ${item.cantidad}", color = Color.Black)
                             }
 
-                            Text("\$${item.producto.precio * item.cantidad}", color = Color.Black)
+                            Text("\$${(item.producto.precio ?: 0) * item.cantidad}", color = Color.Black)
                         }
                     }
                 }

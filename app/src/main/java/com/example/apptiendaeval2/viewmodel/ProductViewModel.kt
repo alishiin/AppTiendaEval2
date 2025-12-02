@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apptiendaeval2.model.Producto
 import com.example.apptiendaval2.network.ApiService
+import com.example.apptiendaval2.events.ProductEvents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,6 +21,15 @@ class ProductViewModel(
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
+
+    init {
+        // Escuchar eventos de refresh emitidos por AdminViewModel
+        viewModelScope.launch {
+            ProductEvents.refresh.collect {
+                fetchProductos()
+            }
+        }
+    }
 
     fun fetchProductos() {
         viewModelScope.launch {

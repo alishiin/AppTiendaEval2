@@ -1,15 +1,15 @@
 package com.example.apptiendaeval2.model
 
 data class Producto(
-    val id: Int,
-    val nombre: String,
-    val precio: Int,
-    val descripcion: String,
+    val id: Long? = null,
+    val nombre: String? = null,
+    val precio: Int? = null,
+    val descripcion: String? = null,
 
     // ✅ IMAGEN DESDE API (URL)
-    val imagenUrl: String,
+    val imagenUrl: String? = null,
 
-    val categoria: Categoria,
+    val categoria: Categoria? = null,
 
     // ✅ MÚLTIPLES IMÁGENES POR URL (SI QUIERES GALERÍA)
     val imagenesUrl: List<String> = emptyList(),

@@ -26,7 +26,7 @@ import coil.compose.rememberAsyncImagePainter
 @Composable
 fun CartScreen(navController: NavController, cartViewModel: CartViewModel = viewModel()) {
     val cartItems by cartViewModel.items.collectAsState()
-    val total = cartItems.sumOf { it.producto.precio * it.cantidad }
+    val total = cartItems.sumOf { (it.producto.precio ?: 0) * it.cantidad }
 
     Scaffold(
         topBar = {
@@ -184,12 +184,12 @@ fun ProductGroupCard(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = producto.nombre.uppercase(),
+                        text = producto.nombre?.uppercase() ?: "SIN NOMBRE",
                         style = FuturaProductTitle,
                         color = Color.Black
                     )
                     Text(
-                        text = "PRECIO: \$${producto.precio}",
+                        text = "PRECIO: \$${producto.precio ?: 0}",
                         style = FuturaPrice,
                         color = Color(0xFF006400)
                     )
@@ -276,5 +276,3 @@ fun TallaRow(
         }
     }
 }
-
-

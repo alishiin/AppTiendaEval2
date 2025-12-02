@@ -14,7 +14,8 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/fondo_logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppTiendaEval2">
+        android:theme="@style/Theme.AppTiendaEval2"
+        android:usesCleartextTraffic="true">
         <activity
             android:name="com.example.apptiendaval2.MainActivity"
             android:exported="true"
