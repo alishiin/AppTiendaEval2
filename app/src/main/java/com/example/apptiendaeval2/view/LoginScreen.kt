@@ -12,16 +12,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.apptiendaeval2.model.UserRepository
 import com.example.apptiendaeval2.R
 import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
+import com.example.apptiendaval2.viewmodel.AuthViewModel
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, authViewModel: AuthViewModel = viewModel()) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf("") }
+
+    val user by authViewModel.user.collectAsState()
+    val error by authViewModel.error.collectAsState()
+    val loading by authViewModel.loading.collectAsState()
+
+    // Navegar si login correcto
+    LaunchedEffect(user) {
+        user?.let {
+            if (it.email == "admin@tienda.cl") navController.navigate("backoffice")
+            else navController.navigate("home")
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -35,6 +47,7 @@ fun LoginScreen(navController: NavController) {
                 .fillMaxSize()
                 .background(Color.White.copy(alpha = 0.35f))
         )
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -49,7 +62,7 @@ fun LoginScreen(navController: NavController) {
                     .padding(24.dp)
             ) {
                 Text(
-                    "INICIO DE SESI0N",
+                    "INICIO DE SESIÓN",
                     style = MaterialTheme.typography.h4,
                     color = Color.Black
                 )
@@ -82,29 +95,15 @@ fun LoginScreen(navController: NavController) {
                 )
                 Spacer(Modifier.height(16.dp))
 
-                if (errorMessage.isNotEmpty()) {
-                    Text(errorMessage, color = Color.Red)
+                if (!error.isNullOrEmpty()) {
+                    Text(error!!, color = Color.Red)
                     Spacer(Modifier.height(8.dp))
                 }
 
                 Button(
                     onClick = {
-                        errorMessage = ""
-                        when {
-                            email.isBlank() || password.isBlank() ->
-                                errorMessage = "Todos los campos son obligatorios"
-                            !email.contains("@") || !email.contains(".") ->
-                                errorMessage = "Por favor ingresa un email válido"
-                            password.length < 3 ->
-                                errorMessage = "Contraseña muy corta"
-                            email == "admin@tienda.cl" && password == "admin123" ->
-                                navController.navigate("backoffice")
-                            email == "a@a.cl" && password == "123123" ->
-                                navController.navigate("home")
-                            UserRepository.validateUser(email, password) ->
-                                navController.navigate("home")
-                            else -> errorMessage = "Email o contraseña incorrectos"
-                        }
+                        if (email.isBlank() || password.isBlank()) return@Button
+                        authViewModel.login(email, password)
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.Black,
@@ -112,17 +111,24 @@ fun LoginScreen(navController: NavController) {
                     ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        text = "INGRESAR",
-                        style = FuturaButtonStyle
-                    )
+                    if (loading) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    } else {
+                        Text(
+                            text = "INGRESAR",
+                            style = FuturaButtonStyle
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(8.dp))
 
                 TextButton(onClick = { navController.navigate("register") }) {
                     Text(
-                        text = "¿NO TIENES CUENTA? REGISTRATE",
+                        text = "¿NO TIENES CUENTA? REGÍSTRATE",
                         color = Color.Black,
                         style = MaterialTheme.typography.button
                     )

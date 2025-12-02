@@ -21,6 +21,7 @@ import com.example.apptiendaval2.viewmodel.CartItem
 import com.example.apptiendaeval2.ui.theme.FuturaProductTitle
 import com.example.apptiendaeval2.ui.theme.FuturaPrice
 import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
+import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun CartScreen(navController: NavController, cartViewModel: CartViewModel = viewModel()) {
@@ -173,10 +174,10 @@ fun ProductGroupCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = producto.imagenResId),
+                    painter = rememberAsyncImagePainter(producto.imagenUrl),
                     contentDescription = producto.nombre,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(70.dp)
+                    modifier = Modifier.size(60.dp),
+                    contentScale = ContentScale.Crop
                 )
 
                 Spacer(Modifier.width(12.dp))

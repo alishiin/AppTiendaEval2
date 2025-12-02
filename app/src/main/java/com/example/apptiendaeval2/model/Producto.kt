@@ -5,9 +5,15 @@ data class Producto(
     val nombre: String,
     val precio: Int,
     val descripcion: String,
-    val imagenResId: Int,
+
+    // ✅ IMAGEN DESDE API (URL)
+    val imagenUrl: String,
+
     val categoria: Categoria,
-    val imagenesResId: List<Int> = emptyList(),
+
+    // ✅ MÚLTIPLES IMÁGENES POR URL (SI QUIERES GALERÍA)
+    val imagenesUrl: List<String> = emptyList(),
+
     val valoraciones: List<Valoracion> = emptyList(),
     val tallas: List<String> = listOf("S","M","L","XL"),
     val medidas: List<String> = emptyList()

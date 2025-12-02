@@ -11,88 +11,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.apptiendaeval2.model.User
-import com.example.apptiendaeval2.model.UserRepository
 import com.example.apptiendaeval2.R
+import com.example.apptiendaval2.viewmodel.AuthViewModel
+
+
 
 // Funciones de validación
-fun isValidEmail(email: String): Boolean {
-    return email.contains("@") && email.contains(".") &&
-           email.indexOf("@") > 0 &&
-           email.lastIndexOf(".") > email.indexOf("@") &&
-           email.lastIndexOf(".") < email.length - 1
-}
+fun isValidEmail(email: String) = email.contains("@") && email.contains(".") &&
+        email.indexOf("@") > 0 &&
+        email.lastIndexOf(".") > email.indexOf("@") &&
+        email.lastIndexOf(".") < email.length - 1
 
-fun isValidRut(rut: String): Boolean {
-    if (rut.isBlank()) return false
+fun isValidPassword(password: String) = password.length >= 6 &&
+        password.any { it.isDigit() } && password.any { it.isLetter() }
 
-    // Limpiar RUT: remover puntos, guiones y espacios
-    val cleanRut = rut.replace(".", "").replace("-", "").replace(" ", "").uppercase()
-
-    // Validar longitud mínima (7-8 dígitos + 1 dígito verificador)
-    if (cleanRut.length < 8 || cleanRut.length > 9) return false
-
-    // Separar número y dígito verificador
-    val rutNumber = cleanRut.dropLast(1)
-    val dv = cleanRut.last()
-
-    // Validar que el número sea solo dígitos
-    if (!rutNumber.all { it.isDigit() }) return false
-
-    // Validar que el RUT tenga al menos 1 millón (formato real chileno)
-    val rutInt = rutNumber.toIntOrNull() ?: return false
-    if (rutInt < 1000000) return false
-
-    // Calcular dígito verificador
-    var suma = 0
-    var multiplicador = 2
-
-    for (i in rutNumber.length - 1 downTo 0) {
-        suma += rutNumber[i].digitToInt() * multiplicador
-        multiplicador++
-        if (multiplicador > 7) multiplicador = 2
-    }
-
-    val resto = suma % 11
-    val dvCalculado = when (resto) {
-        0 -> '0'
-        1 -> 'K'
-        else -> (11 - resto + '0'.code).toChar()
-    }
-
-    return dv == dvCalculado
-}
-
-fun isValidName(name: String): Boolean {
-    return name.trim().length >= 2 && name.trim().matches(Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"))
-}
-
-fun isValidAddress(address: String): Boolean {
-    return address.trim().length >= 5
-}
-
-fun isValidPassword(password: String): Boolean {
-    return password.length >= 6 && password.any { it.isDigit() } && password.any { it.isLetter() }
-}
+fun isValidName(name: String) = name.trim().length >= 2 &&
+        name.trim().matches(Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"))
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel = viewModel()
+) {
     var nombre by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var direccion by remember { mutableStateOf("") }
-    var rut by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
-    // Estados de validación en tiempo real
-    var nombreError by remember { mutableStateOf("") }
-    var emailError by remember { mutableStateOf("") }
-    var direccionError by remember { mutableStateOf("") }
-    var rutError by remember { mutableStateOf("") }
-    var passwordError by remember { mutableStateOf("") }
-    var confirmPasswordError by remember { mutableStateOf("") }
+    val user by authViewModel.user.collectAsState()
+    val loading by authViewModel.loading.collectAsState()
+    val error by authViewModel.error.collectAsState()
+
+    // Navegar si registro correcto
+    LaunchedEffect(user) {
+        user?.let {
+            navController.navigate("login")
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -101,7 +59,6 @@ fun RegisterScreen(navController: NavController) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -136,167 +93,65 @@ fun RegisterScreen(navController: NavController) {
                     focusedLabelColor = Color.Black,
                     unfocusedLabelColor = Color.Black
                 )
-                // Campo Nombre
+
                 OutlinedTextField(
                     value = nombre,
-                    onValueChange = {
-                        nombre = it
-                        nombreError = when {
-                            it.isBlank() -> ""
-                            !isValidName(it) -> "Nombre debe tener al menos 2 caracteres y solo letras"
-                            else -> ""
-                        }
-                    },
+                    onValueChange = { nombre = it },
                     label = { Text("Nombre completo") },
                     colors = blackFieldColors,
-                    isError = nombreError.isNotEmpty(),
                     modifier = Modifier.fillMaxWidth()
                 )
-                if (nombreError.isNotEmpty()) {
-                    Text(nombreError, color = Color.Red, style = MaterialTheme.typography.caption)
-                }
-
                 Spacer(Modifier.height(8.dp))
 
-                // Campo Email
                 OutlinedTextField(
                     value = email,
-                    onValueChange = {
-                        email = it
-                        emailError = when {
-                            it.isBlank() -> ""
-                            !isValidEmail(it) -> "Email debe contener @ y un punto válido"
-                            else -> ""
-                        }
-                    },
+                    onValueChange = { email = it },
                     label = { Text("Email") },
                     colors = blackFieldColors,
-                    isError = emailError.isNotEmpty(),
                     modifier = Modifier.fillMaxWidth()
                 )
-                if (emailError.isNotEmpty()) {
-                    Text(emailError, color = Color.Red, style = MaterialTheme.typography.caption)
-                }
-
                 Spacer(Modifier.height(8.dp))
 
-                // Campo Dirección
-                OutlinedTextField(
-                    value = direccion,
-                    onValueChange = {
-                        direccion = it
-                        direccionError = when {
-                            it.isBlank() -> ""
-                            !isValidAddress(it) -> "Dirección debe tener al menos 5 caracteres"
-                            else -> ""
-                        }
-                    },
-                    label = { Text("Dirección") },
-                    colors = blackFieldColors,
-                    isError = direccionError.isNotEmpty(),
-                    modifier = Modifier.fillMaxWidth()
-                )
-                if (direccionError.isNotEmpty()) {
-                    Text(direccionError, color = Color.Red, style = MaterialTheme.typography.caption)
-                }
-
-                Spacer(Modifier.height(8.dp))
-
-                // Campo RUT
-                OutlinedTextField(
-                    value = rut,
-                    onValueChange = {
-                        rut = it
-                        rutError = when {
-                            it.isBlank() -> ""
-                            !isValidRut(it) -> "RUT inválido (ej: 12.345.678-9)"
-                            else -> ""
-                        }
-                    },
-                    label = { Text("RUT") },
-                    colors = blackFieldColors,
-                    isError = rutError.isNotEmpty(),
-                    modifier = Modifier.fillMaxWidth()
-                )
-                if (rutError.isNotEmpty()) {
-                    Text(rutError, color = Color.Red, style = MaterialTheme.typography.caption)
-                }
-
-                Spacer(Modifier.height(8.dp))
-
-                // Campo Contraseña
                 OutlinedTextField(
                     value = password,
-                    onValueChange = {
-                        password = it
-                        passwordError = when {
-                            it.isBlank() -> ""
-                            !isValidPassword(it) -> "Contraseña debe tener al menos 6 caracteres, letras y números"
-                            else -> ""
-                        }
-                        // Revalidar confirmación si ya se ingresó
-                        if (confirmPassword.isNotBlank()) {
-                            confirmPasswordError = if (it != confirmPassword) "Las contraseñas no coinciden" else ""
-                        }
-                    },
+                    onValueChange = { password = it },
                     label = { Text("Contraseña") },
                     colors = blackFieldColors,
-                    isError = passwordError.isNotEmpty(),
                     modifier = Modifier.fillMaxWidth()
                 )
-                if (passwordError.isNotEmpty()) {
-                    Text(passwordError, color = Color.Red, style = MaterialTheme.typography.caption)
-                }
-
                 Spacer(Modifier.height(8.dp))
 
-                // Campo Confirmar Contraseña
                 OutlinedTextField(
                     value = confirmPassword,
-                    onValueChange = {
-                        confirmPassword = it
-                        confirmPasswordError = when {
-                            it.isBlank() -> ""
-                            it != password -> "Las contraseñas no coinciden"
-                            else -> ""
-                        }
-                    },
+                    onValueChange = { confirmPassword = it },
                     label = { Text("Confirmar Contraseña") },
                     colors = blackFieldColors,
-                    isError = confirmPasswordError.isNotEmpty(),
                     modifier = Modifier.fillMaxWidth()
                 )
-                if (confirmPasswordError.isNotEmpty()) {
-                    Text(confirmPasswordError, color = Color.Red, style = MaterialTheme.typography.caption)
-                }
                 Spacer(Modifier.height(16.dp))
 
+                // Mostrar errores del ViewModel o locales
                 if (errorMessage.isNotEmpty()) {
                     Text(errorMessage, color = Color.Red)
+                    Spacer(Modifier.height(8.dp))
+                }
+                if (!error.isNullOrEmpty()) {
+                    Text(error!!, color = Color.Red)
                     Spacer(Modifier.height(8.dp))
                 }
 
                 Button(
                     onClick = {
                         errorMessage = ""
-
-                        // Validar todos los campos
-                        val hasErrors = listOf(nombreError, emailError, direccionError, rutError, passwordError, confirmPasswordError)
-                            .any { it.isNotEmpty() }
-
                         when {
-                            nombre.isBlank() || email.isBlank() || direccion.isBlank() || rut.isBlank() || password.isBlank() || confirmPassword.isBlank() ->
+                            nombre.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank() ->
                                 errorMessage = "Todos los campos son obligatorios"
-                            hasErrors -> errorMessage = "Por favor corrige los errores antes de continuar"
-                            !isValidName(nombre) -> errorMessage = "Nombre inválido"
                             !isValidEmail(email) -> errorMessage = "Email inválido"
-                            !isValidAddress(direccion) -> errorMessage = "Dirección inválida"
-                            !isValidRut(rut) -> errorMessage = "RUT inválido"
                             !isValidPassword(password) -> errorMessage = "Contraseña inválida"
                             password != confirmPassword -> errorMessage = "Las contraseñas no coinciden"
+                            !isValidName(nombre) -> errorMessage = "Nombre inválido"
                             else -> {
-                                UserRepository.addUser(User(nombre, email, password))
-                                navController.navigate("login")
+                                authViewModel.register(nombre, email, password)
                             }
                         }
                     },
@@ -306,9 +161,14 @@ fun RegisterScreen(navController: NavController) {
                         contentColor = Color.White
                     )
                 ) {
-                    Text("Registrar y volver al Login")
+                    if (loading) {
+                        CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
+                    } else {
+                        Text("Registrar y volver al Login")
+                    }
                 }
             }
         }
     }
 }
+

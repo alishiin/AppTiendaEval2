@@ -12,10 +12,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.apptiendaval2.viewmodel.CartViewModel
 
 @Composable
@@ -62,8 +62,10 @@ fun CheckoutScreen(navController: NavController, cartViewModel: CartViewModel) {
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+
+                            // ✅ IMAGEN DESDE URL (API)
                             Image(
-                                painter = painterResource(id = item.producto.imagenResId),
+                                painter = rememberAsyncImagePainter(item.producto.imagenUrl),
                                 contentDescription = item.producto.nombre,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier

@@ -1,28 +1,24 @@
-// UserRepository.kt
-package com.example.apptiendaeval2.model
+package com.example.apptiendaeval2.repository
 
-data class User(
-    val nombre: String,
-    val email: String,
-    val password: String
-)
+import com.example.apptiendaeval2.model.UserResponse
+import com.example.apptiendaval2.network.ApiService
 
-object UserRepository {
-    private val users = mutableListOf<User>()
-    private val userCredentials = mutableMapOf<String, String>()
+class UserRepository(private val api: ApiService) {
 
-    init {
-        val testUser = User("Test User", "a@a.cl", "123123")
-        users.add(testUser)
-        userCredentials[testUser.email] = testUser.password
+    suspend fun login(email: String, password: String): UserResponse {
+        val body = mapOf(
+            "email" to email,
+            "password" to password
+        )
+        return api.login(body).body()!!
     }
 
-    fun addUser(user: User) {
-        users.add(user)
-        userCredentials[user.email] = user.password
-    }
-
-    fun validateUser(email: String, password: String): Boolean {
-        return userCredentials[email] == password
+    suspend fun register(nombre: String, email: String, password: String): UserResponse {
+        val body = mapOf(
+            "nombre" to nombre,
+            "email" to email,
+            "password" to password
+        )
+        return api.register(body).body()!!
     }
 }
