@@ -41,17 +41,20 @@ class AuthViewModel(
         }
     }
 
-    // REGISTER
-    fun register(nombre: String, email: String, password: String) {
+    // REGISTER - Ahora incluye RUT, Dirección y Comuna
+    fun register(nombre: String, email: String, password: String, rut: String, direccion: String, comuna: String) {
         viewModelScope.launch {
             _loading.value = true
             _error.value = null
             try {
                 val response = apiService.register(
                     mapOf(
-                        "nombre" to nombre,
+                        "name" to nombre,         // Backend espera "name"
                         "email" to email,
-                        "password" to password
+                        "password" to password,
+                        "rut" to rut,             // ✅ Campo RUT
+                        "direccion" to direccion, // ✅ Campo Dirección
+                        "comuna" to comuna        // ✅ Campo Comuna
                     )
                 )
                 if (response.isSuccessful && response.body() != null) {

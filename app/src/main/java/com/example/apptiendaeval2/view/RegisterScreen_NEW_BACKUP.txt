@@ -1,0 +1,18 @@
+// ESTE ARCHIVO YA NO SE USA
+// El contenido correcto está en RegisterScreen.kt
+//
+// INSTRUCCIONES PARA ELIMINAR ESTE ARCHIVO:
+//
+// En Android Studio:
+// 1. Haz clic derecho sobre este archivo en el Project Explorer
+// 2. Selecciona "Delete"
+// 3. Confirma la eliminación
+// 4. File -> Sync Project with Gradle Files
+//
+// O manualmente:
+// 1. Cierra Android Studio
+// 2. Ve a: app\src\main\java\com\example\apptiendaeval2\view\
+// 3. Elimina RegisterScreen_NEW.kt
+// 4. Abre Android Studio
+// 5. Sync Gradle
+

@@ -103,7 +103,7 @@ interface ApiService {
     // =======================
 
     companion object {
-        private const val BASE_URL = "http://10.0.2.2:8080/" // Cambia esto por tu backend
+        private const val BASE_URL = "http://18.217.254.148:8080/" // API AWS
 
         fun create(): ApiService {
             val retrofit = Retrofit.Builder()
