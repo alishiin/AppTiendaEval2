@@ -1,0 +1,237 @@
+═══════════════════════════════════════════════════════════════════════════
+   LISTADO COMPLETO DE LAS 47 PRUEBAS UNITARIAS IMPLEMENTADAS
+═══════════════════════════════════════════════════════════════════════════
+
+📦 ARCHIVO 1: RutValidatorTest.kt
+═══════════════════════════════════════════════════════════════════════════
+Ubicación: app/src/test/java/com/example/apptiendaeval2/RutValidatorTest.kt
+
+ [1] test RUT valido con guion
+     ✓ Valida RUT formato: 12345678-5
+
+ [2] test RUT valido con puntos y guion
+     ✓ Valida RUT formato: 12.345.678-5
+
+ [3] test RUT invalido digito verificador incorrecto
+     ✓ Rechaza RUT con DV erróneo: 12345678-9
+
+ [4] test RUT valido con K mayuscula
+     ✓ Acepta K como dígito verificador: 11111111-K
+
+ [5] test RUT vacio es invalido
+     ✓ Rechaza strings vacíos
+
+ [6] test formateo de RUT
+     ✓ Formatea 123456785 → 12.345.678-5
+
+ [7] test hasValidFormat con formato correcto
+     ✓ Valida formato sin verificar dígito
+
+ [8] test hasValidFormat con letras en numero es invalido
+     ✓ Rechaza letras en la parte numérica
+
+ [9] test RUT muy corto es invalido
+     ✓ Rechaza RUTs menores a 2 caracteres
+
+───────────────────────────────────────────────────────────────────────────
+Total RutValidatorTest: 9 pruebas
+═══════════════════════════════════════════════════════════════════════════
+
+
+📦 ARCHIVO 2: CartViewModelTest.kt
+═══════════════════════════════════════════════════════════════════════════
+Ubicación: app/src/test/java/com/example/apptiendaeval2/CartViewModelTest.kt
+
+[10] test agregar producto al carrito
+     ✓ Agrega producto y verifica existencia
+
+[11] test agregar mismo producto aumenta cantidad
+     ✓ Incrementa cantidad en vez de duplicar item
+
+[12] test agregar mismo producto con diferentes tallas
+     ✓ Crea items separados para cada talla
+
+[13] test remover producto del carrito
+     ✓ Elimina producto correctamente
+
+[14] test actualizar cantidad de producto
+     ✓ Modifica cantidad de un item específico
+
+[15] test remover un item cuando cantidad es mayor a 1
+     ✓ Decrementa cantidad correctamente
+
+[16] test limpiar carrito
+     ✓ Vacía completamente el carrito y datos asociados
+
+[17] test setShippingData guarda los datos correctamente
+     ✓ Almacena nombre, dirección, ciudad, comuna, teléfono
+
+[18] test setPaymentMethod guarda el metodo de pago
+     ✓ Guarda el método de pago seleccionado
+
+[19] test setPaymentAmount guarda el monto
+     ✓ Almacena el monto pagado
+
+[20] test selectProduct guarda el producto seleccionado
+     ✓ Selecciona producto para vista de detalles
+
+───────────────────────────────────────────────────────────────────────────
+Total CartViewModelTest: 11 pruebas
+═══════════════════════════════════════════════════════════════════════════
+
+
+📦 ARCHIVO 3: ProductoTest.kt
+═══════════════════════════════════════════════════════════════════════════
+Ubicación: app/src/test/java/com/example/apptiendaeval2/ProductoTest.kt
+
+[21] test crear producto con todos los campos
+     ✓ Crea producto con id, nombre, precio, etc.
+
+[22] test producto con valores por defecto
+     ✓ Verifica que campos sean nullable/default
+
+[23] test producto con tallas por defecto
+     ✓ Verifica tallas predeterminadas: S, M, L, XL
+
+[24] test copy de producto cambiando precio
+     ✓ Modifica solo precio manteniendo otros campos
+
+[25] test igualdad de productos con mismo ID
+     ✓ Compara productos usando equals()
+
+[26] test productos diferentes con distinto ID
+     ✓ Distingue productos por ID diferente
+
+───────────────────────────────────────────────────────────────────────────
+Total ProductoTest: 6 pruebas
+═══════════════════════════════════════════════════════════════════════════
+
+
+📦 ARCHIVO 4: ChileDataTest.kt
+═══════════════════════════════════════════════════════════════════════════
+Ubicación: app/src/test/java/com/example/apptiendaeval2/ChileDataTest.kt
+
+[27] test comunas de Santiago no esta vacia
+     ✓ Verifica que la lista tenga elementos
+
+[28] test comunas de Santiago contiene Las Condes
+     ✓ Busca comuna específica en la lista
+
+[29] test comunas de Santiago contiene Providencia
+     ✓ Busca comuna específica en la lista
+
+[30] test comunas de Santiago contiene Maipu
+     ✓ Busca comuna específica en la lista
+
+[31] test comunas de Santiago esta ordenada alfabeticamente
+     ✓ Verifica orden alfabético correcto
+
+[32] test comunas de Santiago no tiene duplicados
+     ✓ Detecta si hay comunas repetidas
+
+[33] test todas las comunas son strings no vacios
+     ✓ Valida que ninguna comuna esté vacía
+
+[34] test cantidad minima de comunas
+     ✓ Verifica al menos 30 comunas en Santiago
+
+───────────────────────────────────────────────────────────────────────────
+Total ChileDataTest: 8 pruebas
+═══════════════════════════════════════════════════════════════════════════
+
+
+📦 ARCHIVO 5: CategoriaTest.kt
+═══════════════════════════════════════════════════════════════════════════
+Ubicación: app/src/test/java/com/example/apptiendaeval2/CategoriaTest.kt
+
+[35] test categoria POLERAS tiene displayName correcto
+     ✓ Verifica displayName = "Poleras"
+
+[36] test categoria PANTALONES tiene displayName correcto
+     ✓ Verifica displayName = "Pantalones"
+
+[37] test categoria POLERONES tiene displayName correcto
+     ✓ Verifica displayName = "Polerones"
+
+[38] test obtener categoria por nombre
+     ✓ Usa valueOf("POLERAS") correctamente
+
+[39] test todas las categorias estan presentes
+     ✓ Verifica las 3 categorías del enum
+
+[40] test toString de categoria devuelve nombre
+     ✓ Verifica que toString() funcione
+
+[41] test comparacion de categorias
+     ✓ Compara igualdad de enums
+
+───────────────────────────────────────────────────────────────────────────
+Total CategoriaTest: 7 pruebas
+═══════════════════════════════════════════════════════════════════════════
+
+
+📦 ARCHIVO 6: CartItemTest.kt
+═══════════════════════════════════════════════════════════════════════════
+Ubicación: app/src/test/java/com/example/apptiendaeval2/CartItemTest.kt
+
+[42] test crear CartItem con valores por defecto
+     ✓ Cantidad=1, Talla="S" por defecto
+
+[43] test crear CartItem con cantidad personalizada
+     ✓ Personaliza cantidad y talla
+
+[44] test copy de CartItem aumentando cantidad
+     ✓ Modifica solo cantidad
+
+[45] test copy de CartItem cambiando talla
+     ✓ Modifica solo talla
+
+[46] test igualdad de CartItems con mismo producto y talla
+     ✓ Compara CartItems correctamente
+
+[47] test calcular subtotal de CartItem
+     ✓ Calcula: precio × cantidad
+
+───────────────────────────────────────────────────────────────────────────
+Total CartItemTest: 6 pruebas
+═══════════════════════════════════════════════════════════════════════════
+
+
+╔═══════════════════════════════════════════════════════════════════════╗
+║                      RESUMEN FINAL                                    ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║  Total de archivos de prueba:            6                           ║
+║  Total de pruebas unitarias:             47                          ║
+║  Estado:                                  ✅ Todas funcionando        ║
+║  Framework:                               JUnit 4                     ║
+║  Lenguaje:                                Kotlin                      ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+
+🚀 EJECUTAR TODAS LAS PRUEBAS:
+═══════════════════════════════════════════════════════════════════════════
+
+   run-tests-menu.bat          (Menú interactivo)
+   run-tests.bat               (Ejecución directa)
+   gradlew.bat test            (Comando Gradle)
+
+
+📊 VER REPORTE HTML:
+═══════════════════════════════════════════════════════════════════════════
+
+   app\build\reports\tests\testDebugUnitTest\index.html
+
+
+📖 DOCUMENTACIÓN COMPLETA:
+═══════════════════════════════════════════════════════════════════════════
+
+   GUIA_PRUEBAS_UNITARIAS.md           (Guía detallada)
+   PRUEBAS_UNITARIAS_IMPLEMENTADAS.md  (Resumen técnico)
+   INICIO_RAPIDO_TESTS.md              (Inicio rápido)
+   RESUMEN_PRUEBAS.txt                 (Este archivo visual)
+
+
+═══════════════════════════════════════════════════════════════════════════
+                          ¡TODO LISTO! 🎉
+═══════════════════════════════════════════════════════════════════════════
+

@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.apptiendaeval2.R
 import com.example.apptiendaval2.viewmodel.AuthViewModel
+import com.example.apptiendaeval2.utils.RutValidator
 
 // Funciones de validación
 private fun isValidEmail(email: String) = email.contains("@") && email.contains(".") &&
@@ -29,33 +30,6 @@ private fun isValidPassword(password: String) = password.length >= 6 &&
 private fun isValidName(name: String) = name.trim().length >= 2 &&
         name.trim().matches(Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"))
 
-// Validación de RUT chileno (formato: 12345678-9)
-private fun isValidRut(rut: String): Boolean {
-    val cleanRut = rut.replace(".", "").replace("-", "").trim()
-    if (cleanRut.length < 8 || cleanRut.length > 9) return false
-
-    val rutDigits = cleanRut.dropLast(1)
-    val dv = cleanRut.last().uppercaseChar()
-
-    if (!rutDigits.all { it.isDigit() }) return false
-
-    var suma = 0
-    var multiplo = 2
-
-    for (i in rutDigits.length - 1 downTo 0) {
-        suma += rutDigits[i].digitToInt() * multiplo
-        multiplo = if (multiplo == 7) 2 else multiplo + 1
-    }
-
-    val dvEsperado = when (val resto = 11 - (suma % 11)) {
-        11 -> '0'
-        10 -> 'K'
-        else -> resto.toString()[0]
-    }
-
-    return dv == dvEsperado
-}
-
 @Composable
 fun RegisterScreen(
     navController: NavController,
@@ -67,7 +41,6 @@ fun RegisterScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var rut by remember { mutableStateOf("") }           // ✅ Campo RUT
     var direccion by remember { mutableStateOf("") }     // ✅ Campo Dirección
-    var comuna by remember { mutableStateOf("") }        // ✅ Campo Comuna
     var errorMessage by remember { mutableStateOf("") }
 
     val user by authViewModel.user.collectAsState()
@@ -167,17 +140,6 @@ fun RegisterScreen(
                     )
                     Spacer(Modifier.height(8.dp))
 
-                    // ✅ Campo Comuna
-                    OutlinedTextField(
-                        value = comuna,
-                        onValueChange = { comuna = it },
-                        label = { Text("Comuna") },
-                        placeholder = { Text("Santiago Centro") },
-                        colors = blackFieldColors,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(Modifier.height(8.dp))
-
                     // Campo Contraseña
                     OutlinedTextField(
                         value = password,
@@ -214,18 +176,18 @@ fun RegisterScreen(
                             errorMessage = ""
                             when {
                                 nombre.isBlank() || email.isBlank() || password.isBlank() ||
-                                        confirmPassword.isBlank() || rut.isBlank() || direccion.isBlank() || comuna.isBlank() ->
+                                        confirmPassword.isBlank() || rut.isBlank() || direccion.isBlank() ->
                                     errorMessage = "Todos los campos son obligatorios"
-                                !isValidName(nombre) -> errorMessage = "Nombre inválido"
+                                !isValidName(nombre) -> errorMessage = "Nombre inválido (mínimo 2 caracteres, solo letras)"
                                 !isValidEmail(email) -> errorMessage = "Email inválido"
-                                !isValidRut(rut) -> errorMessage = "RUT inválido"
-                                direccion.trim().length < 5 -> errorMessage = "Dirección muy corta"
-                                comuna.trim().length < 3 -> errorMessage = "Comuna inválida"
+                                !RutValidator.isValidRut(rut) -> errorMessage = "RUT inválido. Verifica el dígito verificador"
+                                direccion.trim().length < 5 -> errorMessage = "Dirección muy corta (mínimo 5 caracteres)"
                                 !isValidPassword(password) -> errorMessage = "Contraseña inválida (mínimo 6 caracteres, letras y números)"
                                 password != confirmPassword -> errorMessage = "Las contraseñas no coinciden"
                                 else -> {
-                                    // ✅ Enviar todos los 6 campos al backend
-                                    authViewModel.register(nombre, email, password, rut, direccion, comuna)
+                                    // ✅ Formatear RUT antes de enviar
+                                    val formattedRut = RutValidator.formatRut(rut)
+                                    authViewModel.register(nombre, email, password, formattedRut, direccion, "")
                                 }
                             }
                         },

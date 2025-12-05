@@ -26,6 +26,9 @@ fun NavManager(
     // Creamos el ProductViewModel usando el default constructor
     val productViewModel: ProductViewModel = viewModel()
 
+    // Creamos el AnimeViewModel
+    val animeViewModel: com.example.apptiendaval2.viewmodel.AnimeViewModel = viewModel()
+
     NavHost(navController = navController, startDestination = "login") {
 
         composable("login") { LoginScreen(navController) }
@@ -33,6 +36,22 @@ fun NavManager(
         composable("catalog") { CatalogScreen(navController, cartViewModel = cartViewModel) }
         composable("home") { HomeScreen(navController) }
         composable("checkout") { CheckoutScreen(navController, cartViewModel) }
+
+        // Nuevo flujo de checkout
+        composable("shippingData") { ShippingDataScreen(navController, cartViewModel) }
+        composable("paymentMethod") { PaymentMethodScreen(navController, cartViewModel) }
+        composable("payment") { PaymentScreen(navController, cartViewModel) }
+        composable("orderConfirmation") { OrderConfirmationScreen(navController, cartViewModel) }
+
+        // Rutas para Animes
+        composable("animeList") { AnimeListScreen(navController, animeViewModel) }
+        composable(
+            route = "animeDetails/{animeId}",
+            arguments = listOf(navArgument("animeId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val animeId = backStackEntry.arguments?.getInt("animeId") ?: 0
+            AnimeDetailsScreen(navController, animeId, animeViewModel)
+        }
 
         // PRODUCT DETAILS CON VIEWMODEL REAL (usar Long para el id)
         composable(

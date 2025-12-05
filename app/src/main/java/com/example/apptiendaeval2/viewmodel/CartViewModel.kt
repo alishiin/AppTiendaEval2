@@ -33,6 +33,36 @@ class CartViewModel : ViewModel() {
         _selectedProduct.value = producto
     }
 
+    // 📦 DATOS DE ENVÍO
+    private val _shippingData = mutableStateOf<Map<String, String>>(emptyMap())
+    val shippingData: State<Map<String, String>> = _shippingData
+
+    // 💳 MÉTODO DE PAGO
+    private val _paymentMethod = mutableStateOf("")
+    val paymentMethod: State<String> = _paymentMethod
+
+    // 💰 MONTO PAGADO
+    private val _paymentAmount = mutableStateOf(0)
+    val paymentAmount: State<Int> = _paymentAmount
+
+    fun setShippingData(nombre: String, direccion: String, ciudad: String, comuna: String, telefono: String) {
+        _shippingData.value = mapOf(
+            "nombre" to nombre,
+            "direccion" to direccion,
+            "ciudad" to ciudad,
+            "comuna" to comuna,
+            "telefono" to telefono
+        )
+    }
+
+    fun setPaymentMethod(method: String) {
+        _paymentMethod.value = method
+    }
+
+    fun setPaymentAmount(amount: Int) {
+        _paymentAmount.value = amount
+    }
+
     // --------------------
     // CRUD CARRITO
     // --------------------
@@ -96,5 +126,8 @@ class CartViewModel : ViewModel() {
 
     fun clear() {
         _items.value = emptyList()
+        _shippingData.value = emptyMap()
+        _paymentMethod.value = ""
+        _paymentAmount.value = 0
     }
 }

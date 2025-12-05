@@ -81,6 +81,25 @@ fun HomeScreen(navController: NavController) {
                 )
             }
 
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Botón para ver Animes
+            Button(
+                onClick = { navController.navigate("animeList") },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF2196F3),
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text(
+                    text = "ANIMES",
+                    style = FuturaButtonStyle
+                )
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(

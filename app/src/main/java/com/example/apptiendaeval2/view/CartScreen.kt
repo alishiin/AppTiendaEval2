@@ -136,7 +136,7 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
                                 navController.navigate("error")
                             } else {
                                 if (total > 0) {
-                                    navController.navigate("checkout")
+                                    navController.navigate("shippingData")
                                 }
                             }
                         },
