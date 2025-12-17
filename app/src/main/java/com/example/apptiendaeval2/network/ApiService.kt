@@ -103,7 +103,7 @@ interface ApiService {
     // =======================
 
     companion object {
-        private const val BASE_URL = "http://18.217.254.148:8080/" // API AWS
+        private const val BASE_URL = "https://api-moviles-mg5l.onrender.com/" // API AWS
 
         fun create(): ApiService {
             val retrofit = Retrofit.Builder()

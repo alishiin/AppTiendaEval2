@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -17,6 +19,7 @@ import androidx.navigation.NavController
 import com.example.apptiendaeval2.R
 import com.example.apptiendaval2.viewmodel.AuthViewModel
 import com.example.apptiendaeval2.utils.RutValidator
+import com.example.apptiendaeval2.utils.ChileData
 
 // Funciones de validación
 private fun isValidEmail(email: String) = email.contains("@") && email.contains(".") &&
@@ -30,6 +33,7 @@ private fun isValidPassword(password: String) = password.length >= 6 &&
 private fun isValidName(name: String) = name.trim().length >= 2 &&
         name.trim().matches(Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"))
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RegisterScreen(
     navController: NavController,
@@ -41,7 +45,22 @@ fun RegisterScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var rut by remember { mutableStateOf("") }           // ✅ Campo RUT
     var direccion by remember { mutableStateOf("") }     // ✅ Campo Dirección
+    var region by remember { mutableStateOf("") }        // ✅ Campo Región
+    var comuna by remember { mutableStateOf("") }        // ✅ Campo Comuna
     var errorMessage by remember { mutableStateOf("") }
+
+    // Estados para los dropdowns
+    var expandedRegion by remember { mutableStateOf(false) }
+    var expandedComuna by remember { mutableStateOf(false) }
+
+    // Lista de comunas según la región seleccionada
+    val comunasDisponibles = remember(region) {
+        if (region.isNotEmpty()) {
+            ChileData.getComunasPorCiudad(region)
+        } else {
+            emptyList()
+        }
+    }
 
     val user by authViewModel.user.collectAsState()
     val loading by authViewModel.loading.collectAsState()
@@ -140,6 +159,90 @@ fun RegisterScreen(
                     )
                     Spacer(Modifier.height(8.dp))
 
+                    // ✅ Campo Región (Dropdown)
+                    ExposedDropdownMenuBox(
+                        expanded = expandedRegion,
+                        onExpandedChange = { expandedRegion = !expandedRegion },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        OutlinedTextField(
+                            value = region,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Región/Ciudad") },
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowDropDown,
+                                    contentDescription = "Dropdown",
+                                    tint = Color.Black
+                                )
+                            },
+                            colors = blackFieldColors,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedRegion,
+                            onDismissRequest = { expandedRegion = false }
+                        ) {
+                            ChileData.ciudadesChile.forEach { ciudad ->
+                                DropdownMenuItem(
+                                    onClick = {
+                                        region = ciudad
+                                        comuna = "" // Resetear comuna al cambiar región
+                                        expandedRegion = false
+                                    }
+                                ) {
+                                    Text(ciudad, color = Color.Black)
+                                }
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(8.dp))
+
+                    // ✅ Campo Comuna (Dropdown)
+                    ExposedDropdownMenuBox(
+                        expanded = expandedComuna,
+                        onExpandedChange = {
+                            if (region.isNotEmpty()) {
+                                expandedComuna = !expandedComuna
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        OutlinedTextField(
+                            value = comuna,
+                            onValueChange = {},
+                            readOnly = true,
+                            enabled = region.isNotEmpty(),
+                            label = { Text("Comuna") },
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowDropDown,
+                                    contentDescription = "Dropdown",
+                                    tint = if (region.isNotEmpty()) Color.Black else Color.Gray
+                                )
+                            },
+                            colors = blackFieldColors,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedComuna,
+                            onDismissRequest = { expandedComuna = false }
+                        ) {
+                            comunasDisponibles.forEach { comunaItem ->
+                                DropdownMenuItem(
+                                    onClick = {
+                                        comuna = comunaItem
+                                        expandedComuna = false
+                                    }
+                                ) {
+                                    Text(comunaItem, color = Color.Black)
+                                }
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(8.dp))
+
                     // Campo Contraseña
                     OutlinedTextField(
                         value = password,
@@ -176,7 +279,8 @@ fun RegisterScreen(
                             errorMessage = ""
                             when {
                                 nombre.isBlank() || email.isBlank() || password.isBlank() ||
-                                        confirmPassword.isBlank() || rut.isBlank() || direccion.isBlank() ->
+                                        confirmPassword.isBlank() || rut.isBlank() || direccion.isBlank() ||
+                                        region.isBlank() || comuna.isBlank() ->
                                     errorMessage = "Todos los campos son obligatorios"
                                 !isValidName(nombre) -> errorMessage = "Nombre inválido (mínimo 2 caracteres, solo letras)"
                                 !isValidEmail(email) -> errorMessage = "Email inválido"
@@ -187,7 +291,7 @@ fun RegisterScreen(
                                 else -> {
                                     // ✅ Formatear RUT antes de enviar
                                     val formattedRut = RutValidator.formatRut(rut)
-                                    authViewModel.register(nombre, email, password, formattedRut, direccion, "")
+                                    authViewModel.register(nombre, email, password, formattedRut, direccion, "$region - $comuna")
                                 }
                             }
                         },
