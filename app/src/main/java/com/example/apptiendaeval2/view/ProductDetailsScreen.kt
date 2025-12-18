@@ -21,6 +21,8 @@ import com.example.apptiendaval2.viewmodel.CartViewModel
 import com.example.apptiendaeval2.ui.theme.FuturaProductTitle
 import com.example.apptiendaeval2.ui.theme.FuturaPrice
 import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
+import com.example.apptiendaeval2.utils.CurrencyFormatter
+import com.example.apptiendaeval2.utils.SizeCalculator
 
 @Composable
 fun ProductDetailsScreen(
@@ -41,6 +43,13 @@ fun ProductDetailsScreen(
     }
 
     var cantidad by remember { mutableStateOf(1) }
+
+    // Estados para el recomendador de tallas
+    var showSizeDialog by remember { mutableStateOf(false) }
+    var userHeight by remember { mutableStateOf("") }
+    var userWeight by remember { mutableStateOf("") }
+    var userAge by remember { mutableStateOf("") }
+    var sizeRecommendation by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -118,12 +127,15 @@ fun ProductDetailsScreen(
                 Spacer(Modifier.height(16.dp))
 
                 Text(producto.nombre ?: "", style = FuturaProductTitle)
-                Text("PRECIO: \$${producto.precio ?: 0}", style = FuturaPrice)
+                Text("PRECIO: ${CurrencyFormatter.formatChileanPesos(producto.precio ?: 0)}", style = FuturaPrice)
 
                 Spacer(Modifier.height(12.dp))
 
                 Text("DESCRIPCIÓN", style = MaterialTheme.typography.h6)
-                Text(producto.descripcion ?: "")
+                Text(
+                    text = producto.descripcion ?: "",
+                    style = MaterialTheme.typography.body1
+                )
 
                 Spacer(Modifier.height(16.dp))
 
@@ -132,15 +144,36 @@ fun ProductDetailsScreen(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         producto.tallas.forEach { talla ->
-                            OutlinedButton(
-                                onClick = { selectedTalla = talla }
+                            Button(
+                                onClick = { selectedTalla = talla },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = if (selectedTalla == talla) Color.White else Color.Black,
+                                    contentColor = if (selectedTalla == talla) Color.Black else Color.White
+                                ),
+                                modifier = Modifier.height(48.dp)
                             ) {
-                                Text(talla)
+                                Text(
+                                    text = talla,
+                                    style = FuturaButtonStyle
+                                )
                             }
                         }
+                    }
+
+                    Spacer(Modifier.height(8.dp))
+
+                    // Botón para abrir el recomendador de tallas
+                    OutlinedButton(
+                        onClick = { showSizeDialog = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color(0xFF2196F3)
+                        )
+                    ) {
+                        Text("📏 ¿Qué talla me queda?", color = Color(0xFF2196F3))
                     }
                 }
 
@@ -207,6 +240,109 @@ fun ProductDetailsScreen(
                 }
             }
         }
+    }
+
+    // Diálogo de recomendación de talla
+    if (showSizeDialog) {
+        AlertDialog(
+            onDismissRequest = { showSizeDialog = false },
+            title = { Text("Recomendador de Talla Inteligente") },
+            text = {
+                Column {
+                    Text("Ingresa tus datos para obtener una recomendación personalizada:")
+
+                    Spacer(Modifier.height(16.dp))
+
+                    OutlinedTextField(
+                        value = userHeight,
+                        onValueChange = { userHeight = it.filter { c -> c.isDigit() } },
+                        label = { Text("Estatura (cm)") },
+                        placeholder = { Text("Ej: 175") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        value = userWeight,
+                        onValueChange = { userWeight = it.filter { c -> c.isDigit() } },
+                        label = { Text("Peso (kg)") },
+                        placeholder = { Text("Ej: 70") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        value = userAge,
+                        onValueChange = { userAge = it.filter { c -> c.isDigit() } },
+                        label = { Text("Edad (años)") },
+                        placeholder = { Text("Ej: 25") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
+
+                    if (sizeRecommendation.isNotEmpty()) {
+                        Spacer(Modifier.height(16.dp))
+                        Card(
+                            backgroundColor = Color(0xFFE3F2FD),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = sizeRecommendation,
+                                modifier = Modifier.padding(12.dp),
+                                style = MaterialTheme.typography.body2
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        val height = userHeight.toDoubleOrNull()
+                        val weight = userWeight.toDoubleOrNull()
+                        val age = userAge.toIntOrNull()
+
+                        if (height != null && weight != null && age != null) {
+                            val garmentType = producto.categoria?.name ?: "POLERAS"
+                            sizeRecommendation = SizeCalculator.getSizeRecommendationInfo(
+                                height, weight, age, garmentType
+                            )
+
+                            // Seleccionar automáticamente la talla recomendada si está disponible
+                            val recommendedSize = SizeCalculator.recommendSize(
+                                height, weight, age, garmentType
+                            )
+                            if (producto.tallas.contains(recommendedSize)) {
+                                selectedTalla = recommendedSize
+                            }
+                        } else {
+                            sizeRecommendation = "Por favor, completa todos los campos con valores válidos."
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Black,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Calcular Talla")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showSizeDialog = false
+                    sizeRecommendation = ""
+                    userHeight = ""
+                    userWeight = ""
+                    userAge = ""
+                }) {
+                    Text("Cerrar")
+                }
+            }
+        )
     }
 }
 

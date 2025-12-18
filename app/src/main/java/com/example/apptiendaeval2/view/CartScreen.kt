@@ -7,6 +7,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.*
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +24,7 @@ import com.example.apptiendaval2.viewmodel.CartItem
 import com.example.apptiendaeval2.ui.theme.FuturaProductTitle
 import com.example.apptiendaeval2.ui.theme.FuturaPrice
 import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
+import com.example.apptiendaeval2.ui.theme.CrimeWaveTitle
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
@@ -28,25 +32,67 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel = view
     val cartItems by cartViewModel.items.collectAsState()
     val total = cartItems.sumOf { (it.producto.precio ?: 0) * it.cantidad }
 
+    // Estado para el menú desplegable del usuario
+    var showUserMenu by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "CARRITO DE COMPRAS",
-                        style = MaterialTheme.typography.h6,
+                        text = "CARRITO",
+                        style = CrimeWaveTitle,
                         color = Color.White
                     )
                 },
                 actions = {
-                    TextButton(onClick = { navController.navigate("catalog") }) {
-                        Text("CATÁLOGO", color = Color.White)
+                    // Icono de Casa (Inicio)
+                    IconButton(onClick = { navController.navigate("home") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Inicio",
+                            tint = Color.White
+                        )
                     }
-                    TextButton(onClick = { navController.navigate("home") }) {
-                        Text("INICIO", color = Color.White)
+
+                    // Icono de Carrito (deshabilitado ya que estamos en el carrito)
+                    IconButton(onClick = { /* Ya estamos en el carrito */ }, enabled = false) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Carrito",
+                            tint = Color.White.copy(alpha = 0.5f)
+                        )
                     }
-                    TextButton(onClick = { navController.navigate("login") }) {
-                        Text("CERRAR SESIÓN", color = Color.White)
+
+                    // Icono de Usuario con menú desplegable
+                    Box {
+                        IconButton(onClick = { showUserMenu = !showUserMenu }) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Usuario",
+                                tint = Color.White
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = showUserMenu,
+                            onDismissRequest = { showUserMenu = false }
+                        ) {
+                            DropdownMenuItem(onClick = {
+                                showUserMenu = false
+                                navController.navigate("catalog")
+                            }) {
+                                Text("Ver Catálogo")
+                            }
+                            DropdownMenuItem(onClick = {
+                                showUserMenu = false
+                                navController.navigate("login") {
+                                    popUpTo(0) { inclusive = true }
+                                }
+                            }) {
+                                Text("Cerrar Sesión")
+                            }
+                        }
                     }
                 },
                 backgroundColor = Color.Black,

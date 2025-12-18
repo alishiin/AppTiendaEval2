@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -20,6 +23,9 @@ import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
 
 @Composable
 fun HomeScreen(navController: NavController) {
+    // Estado para el menú desplegable del usuario
+    var showUserMenu by remember { mutableStateOf(false) }
+
     val productos = listOf(
         Pair("GuilirRecs", R.drawable.polera_negra),
         Pair("Vegetta777", R.drawable.polera_azul),
@@ -55,8 +61,38 @@ fun HomeScreen(navController: NavController) {
                     )
                 },
                 actions = {
-                    TextButton(onClick = { navController.navigate("login") }) {
-                        Text("CERRAR SESIÓN", color = Color.White)
+                    // Icono de Carrito
+                    IconButton(onClick = { navController.navigate("cart") }) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Carrito",
+                            tint = Color.White
+                        )
+                    }
+
+                    // Icono de Usuario con menú desplegable
+                    Box {
+                        IconButton(onClick = { showUserMenu = !showUserMenu }) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Usuario",
+                                tint = Color.White
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = showUserMenu,
+                            onDismissRequest = { showUserMenu = false }
+                        ) {
+                            DropdownMenuItem(onClick = {
+                                showUserMenu = false
+                                navController.navigate("login") {
+                                    popUpTo(0) { inclusive = true }
+                                }
+                            }) {
+                                Text("Cerrar Sesión")
+                            }
+                        }
                     }
                 },
                 backgroundColor = Color.Black,

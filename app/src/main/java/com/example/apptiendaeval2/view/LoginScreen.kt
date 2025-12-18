@@ -30,8 +30,12 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel = vie
     // Navegar si login correcto
     LaunchedEffect(user) {
         user?.let {
-            if (it.email == "admin@tienda.cl") navController.navigate("backoffice")
-            else navController.navigate("home")
+            // ✅ Verificar por rol (coincide con campo 'rol' del backend)
+            if (it.rol.uppercase() == "ADMIN") {
+                navController.navigate("backoffice")
+            } else {
+                navController.navigate("home")
+            }
         }
     }
 

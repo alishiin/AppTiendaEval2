@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import com.example.apptiendaeval2.R
 import androidx.compose.ui.Alignment
@@ -16,42 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.apptiendaval2.viewmodel.AdminViewModel
 import coil.compose.rememberAsyncImagePainter
 import androidx.compose.ui.graphics.Color
-
-@Composable
-fun MyTopAppBar(
-    title: String,
-    navIcon: @Composable (() -> Unit)? = null,
-    actions: @Composable RowScope.() -> Unit = {}
-) {
-    TopAppBar(
-        title = {
-            Text(
-                text = title,
-                color = Color.White,
-                style = MaterialTheme.typography.h6.copy(
-                    fontFamily = FontFamily.Cursive,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                )
-            )
-        },
-        navigationIcon = navIcon,
-        actions = actions,
-        backgroundColor = Color(0xFF2C2C2C),
-        contentColor = Color.White,
-        elevation = 8.dp
-    )
-}
+import com.example.apptiendaeval2.ui.theme.CrimeWaveTitle
 
 @Composable
 fun BackOfficeScreen(navController: NavController, adminViewModel: AdminViewModel = viewModel()) {
+
+    // Estado para el menú desplegable del usuario
+    var showUserMenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         adminViewModel.fetchProductos()
@@ -63,16 +38,51 @@ fun BackOfficeScreen(navController: NavController, adminViewModel: AdminViewMode
 
     Scaffold(
         topBar = {
-            MyTopAppBar(
-                title = "Panel admin",
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "CRIMEWAVE",
+                        style = CrimeWaveTitle,
+                        color = Color.White
+                    )
+                },
                 actions = {
-                    TextButton(onClick = { navController.navigate("addProduct") }) {
-                        Text("Agregar Producto", color = Color.White)
+                    // Icono de Agregar Producto (+)
+                    IconButton(onClick = { navController.navigate("addProduct") }) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Agregar Producto",
+                            tint = Color.White
+                        )
                     }
-                    TextButton(onClick = { navController.navigate("login") }) {
-                        Text("Cerrar Sesión", color = Color.White)
+
+                    // Icono de Usuario con menú desplegable
+                    Box {
+                        IconButton(onClick = { showUserMenu = !showUserMenu }) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Usuario",
+                                tint = Color.White
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = showUserMenu,
+                            onDismissRequest = { showUserMenu = false }
+                        ) {
+                            DropdownMenuItem(onClick = {
+                                showUserMenu = false
+                                navController.navigate("login") {
+                                    popUpTo(0) { inclusive = true }
+                                }
+                            }) {
+                                Text("Cerrar Sesión")
+                            }
+                        }
                     }
-                }
+                },
+                backgroundColor = Color.Black,
+                contentColor = Color.White
             )
         }
     ) { padding ->

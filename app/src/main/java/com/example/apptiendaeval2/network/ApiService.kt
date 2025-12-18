@@ -14,12 +14,12 @@ interface ApiService {
     // AUTH
     // =======================
 
-    @POST("api/auth/login")
+    @POST("auth/login")
     suspend fun login(
         @Body body: Map<String, String>
     ): Response<UserResponse>
 
-    @POST("api/auth/register")
+    @POST("auth/register")
     suspend fun register(
         @Body body: Map<String, String>
     ): Response<UserResponse>
@@ -72,7 +72,7 @@ interface ApiService {
         @Path("id") id: Long
     ): Response<Map<String, String>>
 
-    @GET("api/admin/productos")
+    @GET("api/products")
     suspend fun getAllAdminProductos(): Response<List<Producto>>
 
     // =======================

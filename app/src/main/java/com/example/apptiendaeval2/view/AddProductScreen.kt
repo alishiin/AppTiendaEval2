@@ -1,5 +1,8 @@
 package com.example.apptiendaval2.view
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,10 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.apptiendaval2.viewmodel.AdminViewModel
 import com.example.apptiendaeval2.model.Producto
+import com.example.apptiendaeval2.utils.ImageUtils
 
 @Composable
 fun AddProductScreen(
@@ -30,9 +35,34 @@ fun AddProductScreen(
     var imagenUrl by remember { mutableStateOf("") }
     var stock by remember { mutableStateOf("") }
     var categoria by remember { mutableStateOf("POLERAS") }
-    var tallas by remember { mutableStateOf("S,M,L,XL") }
+    var tallasList by remember { mutableStateOf(mutableListOf<String>()) }
+    var currentTalla by remember { mutableStateOf("") }
     var medidasText by remember { mutableStateOf("") }
     var imagenesAdicionales by remember { mutableStateOf("") }
+
+    // Estados para imágenes
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val context = LocalContext.current
+
+    // Launcher para galería
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        selectedImageUri = uri
+        uri?.let {
+            imagenUrl = ImageUtils.getFileName(context, it) ?: "imagen_${System.currentTimeMillis()}.jpg"
+        }
+    }
+
+    // Launcher para cámara
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { bitmap: android.graphics.Bitmap? ->
+        bitmap?.let {
+            imagenUrl = "camera_${System.currentTimeMillis()}.jpg"
+        }
+    }
 
     var expanded by remember { mutableStateOf(false) }
     val categorias = listOf("POLERAS", "PANTALONES", "POLERONES")
@@ -75,7 +105,7 @@ fun AddProductScreen(
                 // stock no está en el modelo actual del backend -> mantener campo por compatibilidad
                 stock = ""
                 categoria = it.categoria?.name ?: "POLERAS"
-                tallas = it.tallas.joinToString(",")
+                tallasList = it.tallas.toMutableList()
                 medidasText = it.medidas.joinToString(",")
                 imagenesAdicionales = it.imagenesUrl.joinToString(",")
                 prefilledState.value = true
@@ -199,14 +229,86 @@ fun AddProductScreen(
             }
 
             item {
-                OutlinedTextField(
-                    value = tallas,
-                    onValueChange = { tallas = it },
-                    label = { Text("Tallas disponibles (separadas por coma)") },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = blackFieldColors,
-                    placeholder = { Text("S,M,L,XL") }
+                Text(
+                    "TALLAS DISPONIBLES",
+                    style = MaterialTheme.typography.h6,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
+
+                // Mostrar tallas agregadas
+                if (tallasList.isNotEmpty()) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        elevation = 2.dp,
+                        backgroundColor = Color(0xFFF5F5F5)
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text("Tallas agregadas:", style = MaterialTheme.typography.subtitle2)
+                            Spacer(Modifier.height(8.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                tallasList.forEach { talla ->
+                                    Card(
+                                        backgroundColor = Color.Black,
+                                        modifier = Modifier.padding(4.dp)
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(talla, color = Color.White)
+                                            Spacer(Modifier.width(8.dp))
+                                            TextButton(
+                                                onClick = { tallasList.remove(talla) },
+                                                modifier = Modifier.size(20.dp),
+                                                contentPadding = PaddingValues(0.dp)
+                                            ) {
+                                                Text("×", color = Color.Red, style = MaterialTheme.typography.h6)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(8.dp))
+                }
+
+                // Campo para agregar nueva talla
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        value = currentTalla,
+                        onValueChange = { currentTalla = it.uppercase() },
+                        label = { Text("Nueva talla") },
+                        placeholder = { Text("Ej: M") },
+                        modifier = Modifier.weight(1f),
+                        colors = blackFieldColors,
+                        singleLine = true
+                    )
+
+                    Spacer(Modifier.width(8.dp))
+
+                    Button(
+                        onClick = {
+                            if (currentTalla.isNotBlank() && !tallasList.contains(currentTalla.trim())) {
+                                tallasList.add(currentTalla.trim())
+                                currentTalla = ""
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFF2196F3),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Agregar")
+                    }
+                }
             }
 
             item {
@@ -270,7 +372,7 @@ fun AddProductScreen(
                         Text("• Precio: \$$precio", color = Color.Black)
                         Text("• Categoría: $categoria", color = Color.Black)
                         Text("• Stock: $stock unidades", color = Color.Black)
-                        Text("• Tallas: $tallas", color = Color.Black)
+                        Text("• Tallas: ${tallasList.joinToString(", ")}", color = Color.Black)
                         Text("• Medidas: $medidasText", color = Color.Black)
                     }
                 }
@@ -300,7 +402,7 @@ fun AddProductScreen(
                                     com.example.apptiendaeval2.model.Categoria.POLERAS
                                 },
                                 imagenesUrl = if (imagenesAdicionales.isBlank()) emptyList() else imagenesAdicionales.split(",").map { it.trim() },
-                                tallas = if (tallas.isBlank()) listOf("S","M","L","XL") else tallas.split(",").map { it.trim() },
+                                tallas = if (tallasList.isEmpty()) listOf("S","M","L","XL") else tallasList,
                                 medidas = if (medidasText.isBlank()) emptyList() else medidasText.split(",").map { it.trim() }
                             )
 

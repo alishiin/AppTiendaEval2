@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,7 +22,13 @@ import com.example.apptiendaval2.viewmodel.CartViewModel
 import com.example.apptiendaval2.viewmodel.ProductViewModel
 import com.example.apptiendaeval2.model.Categoria
 import com.example.apptiendaeval2.R
+import com.example.apptiendaeval2.utils.CurrencyFormatter
+import com.example.apptiendaeval2.ui.theme.CrimeWaveTitle
+import com.example.apptiendaeval2.ui.theme.FuturaProductTitle
+import com.example.apptiendaeval2.ui.theme.FuturaPrice
+import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material.icons.filled.Home
 
 @Composable
 fun CatalogScreen(
@@ -45,14 +54,62 @@ fun CatalogScreen(
         productos.mapNotNull { it.categoria }.distinct()
     }
 
+    // Estado para el menú desplegable del usuario
+    var showUserMenu by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("CATÁLOGO DE PRODUCTOS", color = Color.White) },
+                title = {
+                    Text(
+                        text = "CATÁLOGO",
+                        style = CrimeWaveTitle,
+                        color = Color.White
+                    )
+                },
                 actions = {
-                    TextButton(onClick = { navController.navigate("home") }) { Text("INICIO", color = Color.White) }
-                    TextButton(onClick = { navController.navigate("cart") }) { Text("CARRITO", color = Color.White) }
-                    TextButton(onClick = { navController.navigate("login") }) { Text("CERRAR SESIÓN", color = Color.White) }
+                    // Icono de Casa (Inicio)
+                    IconButton(onClick = { navController.navigate("home") }) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Inicio",
+                            tint = Color.White
+                        )
+                    }
+
+                    // Icono de Carrito
+                    IconButton(onClick = { navController.navigate("cart") }) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Carrito",
+                            tint = Color.White
+                        )
+                    }
+
+                    // Icono de Usuario con menú desplegable
+                    Box {
+                        IconButton(onClick = { showUserMenu = !showUserMenu }) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Usuario",
+                                tint = Color.White
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = showUserMenu,
+                            onDismissRequest = { showUserMenu = false }
+                        ) {
+                            DropdownMenuItem(onClick = {
+                                showUserMenu = false
+                                navController.navigate("login") {
+                                    popUpTo(0) { inclusive = true }
+                                }
+                            }) {
+                                Text("Cerrar Sesión")
+                            }
+                        }
+                    }
                 },
                 backgroundColor = Color.Black
             )
@@ -168,19 +225,19 @@ fun CatalogScreen(
                                         Column(modifier = Modifier.weight(1f)) {
                                             Text(
                                                 text = (p.nombre ?: "Sin nombre").uppercase(),
-                                                style = MaterialTheme.typography.subtitle1,
+                                                style = FuturaProductTitle,
                                                 maxLines = 1
                                             )
 
                                             Text(
-                                                text = "\$${p.precio ?: 0}",
-                                                style = MaterialTheme.typography.body2,
+                                                text = CurrencyFormatter.formatChileanPesos(p.precio ?: 0),
+                                                style = FuturaPrice,
                                                 color = Color(0xFF006400)
                                             )
 
                                             Text(
                                                 text = p.descripcion ?: "Sin descripción",
-                                                style = MaterialTheme.typography.caption,
+                                                style = MaterialTheme.typography.body2,
                                                 maxLines = 1
                                             )
 
@@ -193,7 +250,7 @@ fun CatalogScreen(
                                                     contentColor = Color.White
                                                 )
                                             ) {
-                                                Text("Agregar al carrito")
+                                                Text("Agregar al carrito", style = FuturaButtonStyle)
                                             }
                                         }
                                     }
