@@ -16,13 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.apptiendaval2.viewmodel.CartViewModel
 import com.example.apptiendaval2.viewmodel.ProductViewModel
-import com.example.apptiendaeval2.model.Categoria
 import com.example.apptiendaeval2.R
 import com.example.apptiendaeval2.utils.CurrencyFormatter
+import com.example.apptiendaeval2.utils.ImageUrlHelper
 import com.example.apptiendaeval2.ui.theme.CrimeWaveTitle
 import com.example.apptiendaeval2.ui.theme.FuturaProductTitle
 import com.example.apptiendaeval2.ui.theme.FuturaPrice
@@ -36,7 +37,7 @@ fun CatalogScreen(
     cartViewModel: CartViewModel,
     productViewModel: ProductViewModel = viewModel()
 ) {
-    var selectedCategory by remember { mutableStateOf<Categoria?>(null) }
+    var selectedCategory by remember { mutableStateOf<String?>(null) }
 
     val productos by productViewModel.productos.collectAsState()
     val loading by productViewModel.loading.collectAsState()
@@ -46,12 +47,17 @@ fun CatalogScreen(
         productViewModel.fetchProductos()
     }
 
-    val filteredProductos = remember(productos, selectedCategory) {
-        selectedCategory?.let { cat -> productos.filter { it.categoria == cat } } ?: productos
-    }
+    // Categorías predefinidas (SIEMPRE se muestran)
+    val categorias = listOf("POLERAS", "PANTALONES", "POLERONES")
 
-    val categorias = remember(productos) {
-        productos.mapNotNull { it.categoria }.distinct()
+    val filteredProductos = remember(productos, selectedCategory) {
+        selectedCategory?.let { cat ->
+            productos.filter { producto ->
+                val productoCat = producto.categoria?.uppercase() ?:
+                                  producto.categoryName?.uppercase() ?: ""
+                productoCat.contains(cat.uppercase())
+            }
+        } ?: productos
     }
 
     // Estado para el menú desplegable del usuario
@@ -143,32 +149,48 @@ fun CatalogScreen(
             ) {
 
                 // 🔹 FILTRO POR CATEGORÍA
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(bottom = 16.dp)
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    elevation = 4.dp,
+                    backgroundColor = Color.White.copy(alpha = 0.95f)
                 ) {
-                    item {
-                        Button(
-                            onClick = { selectedCategory = null },
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = if (selectedCategory == null) Color.Black else Color.Gray,
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text("TODOS", color = Color.White)
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+                    ) {
+                        item {
+                            Button(
+                                onClick = { selectedCategory = null },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = if (selectedCategory == null) Color.Black else Color.Gray,
+                                    contentColor = Color.White
+                                ),
+                                elevation = ButtonDefaults.elevation(
+                                    defaultElevation = 4.dp,
+                                    pressedElevation = 8.dp
+                                )
+                            ) {
+                                Text("TODOS", color = Color.White, style = MaterialTheme.typography.button)
+                            }
                         }
-                    }
 
-                    items(categorias.size) { index ->
-                        val cat = categorias[index]
-                        Button(
-                            onClick = { selectedCategory = cat },
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = if (selectedCategory == cat) Color.Black else Color.Gray,
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text(cat.displayName.uppercase(), color = Color.White)
+                        items(categorias.size) { index ->
+                            val cat = categorias[index]
+                            Button(
+                                onClick = { selectedCategory = cat },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = if (selectedCategory == cat) Color.Black else Color.Gray,
+                                    contentColor = Color.White
+                                ),
+                                elevation = ButtonDefaults.elevation(
+                                    defaultElevation = 4.dp,
+                                    pressedElevation = 8.dp
+                                )
+                            ) {
+                                Text(cat, color = Color.White, style = MaterialTheme.typography.button)
+                            }
                         }
                     }
                 }
@@ -212,9 +234,12 @@ fun CatalogScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
 
-                                        // ✅ IMAGEN DESDE URL CON PLACEHOLDER
+                                        // ✅ IMAGEN DESDE API USANDO ID DEL PRODUCTO
                                         Image(
-                                            painter = rememberAsyncImagePainter(p.imagenUrl ?: R.drawable.ic_placeholder),
+                                            painter = rememberAsyncImagePainter(
+                                                model = ImageUrlHelper.getProductImageUrl(p.id),
+                                                error = painterResource(R.drawable.ic_placeholder)
+                                            ),
                                             contentDescription = p.nombre ?: "Producto",
                                             modifier = Modifier.size(70.dp),
                                             contentScale = ContentScale.Crop

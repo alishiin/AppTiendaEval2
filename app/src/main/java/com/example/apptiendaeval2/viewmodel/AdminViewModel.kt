@@ -8,6 +8,8 @@ import com.example.apptiendaval2.events.ProductEvents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class AdminViewModel(
     private val apiService: ApiService = ApiService.create()
@@ -41,19 +43,43 @@ class AdminViewModel(
         }
     }
 
-    fun createProducto(producto: Producto, onSuccess: () -> Unit) {
+    fun createProducto(
+        nombre: String,
+        descripcion: String,
+        precio: Int,
+        stock: Int,
+        tallas: String,
+        imagePart: okhttp3.MultipartBody.Part?,
+        categoryId: Long? = 1L,  // Por defecto categoria 1 (Ropa)
+        onSuccess: () -> Unit
+    ) {
         viewModelScope.launch {
             _loading.value = true
             _error.value = null
             try {
-                val response = apiService.createProducto(producto)
+                val nombreBody = nombre.toRequestBody("text/plain".toMediaTypeOrNull())
+                val descripcionBody = descripcion.toRequestBody("text/plain".toMediaTypeOrNull())
+                val precioBody = precio.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val stockBody = stock.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val tallasBody = tallas.toRequestBody("text/plain".toMediaTypeOrNull())
+                val categoryIdBody = categoryId?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
+
+                val response = apiService.createProducto(
+                    nombre = nombreBody,
+                    descripcion = descripcionBody,
+                    precio = precioBody,
+                    stock = stockBody,
+                    tallasDisponibles = tallasBody,
+                    imagen = imagePart,
+                    categoryId = categoryIdBody
+                )
+
                 if (response.isSuccessful) {
-                    fetchProductos() // refresca la lista
-                    // Notificar a listeners que deben refrescar (ej: catálogo)
+                    fetchProductos()
                     viewModelScope.launch { ProductEvents.refresh.emit(Unit) }
                     onSuccess()
                 } else {
-                    _error.value = "Error al crear producto: ${response.code()}"
+                    _error.value = "Error al crear producto: ${response.code()} - ${response.message()}"
                 }
             } catch (e: Exception) {
                 _error.value = "Error de conexión: ${e.message}"
@@ -83,21 +109,49 @@ class AdminViewModel(
         }
     }
 
-    fun updateProducto(id: Long, producto: Producto, onSuccess: () -> Unit) {
+    fun updateProducto(
+        id: Long,
+        nombre: String,
+        descripcion: String,
+        precio: Int,
+        stock: Int,
+        tallas: String,
+        imagePart: okhttp3.MultipartBody.Part?,
+        categoryId: Long? = 1L,  // Por defecto categoria 1 (Ropa)
+        onSuccess: () -> Unit
+    ) {
         viewModelScope.launch {
             _loading.value = true
             _error.value = null
             try {
-                val response = apiService.updateProducto(id, producto)
+                val nombreBody = nombre.toRequestBody("text/plain".toMediaTypeOrNull())
+                val descripcionBody = descripcion.toRequestBody("text/plain".toMediaTypeOrNull())
+                val precioBody = precio.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val stockBody = stock.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val tallasBody = tallas.toRequestBody("text/plain".toMediaTypeOrNull())
+                val categoryIdBody = categoryId?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
+
+                val response = apiService.updateProducto(
+                    id = id,
+                    nombre = nombreBody,
+                    descripcion = descripcionBody,
+                    precio = precioBody,
+                    stock = stockBody,
+                    tallasDisponibles = tallasBody,
+                    imagen = imagePart,
+                    categoryId = categoryIdBody
+                )
+
                 if (response.isSuccessful) {
                     fetchProductos()
                     viewModelScope.launch { ProductEvents.refresh.emit(Unit) }
                     onSuccess()
                 } else {
-                    _error.value = "Error al actualizar producto: ${response.code()}"
+                    val errorBody = response.errorBody()?.string()
+                    _error.value = "Error al actualizar: ${response.code()}\n${errorBody ?: response.message()}"
                 }
             } catch (e: Exception) {
-                _error.value = "Error de conexión: ${e.message}"
+                _error.value = "Error al actualizar producto: ${e.message}\n${e.javaClass.simpleName}"
             } finally {
                 _loading.value = false
             }

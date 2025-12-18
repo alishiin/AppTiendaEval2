@@ -53,27 +53,44 @@ interface ApiService {
     ): Response<Valoracion>
 
     // =======================
-    // ADMIN
+    // ADMIN - PRODUCTOS
     // =======================
 
-    @POST("api/admin/productos")
+    @Multipart
+    @POST("api/products")
     suspend fun createProducto(
-        @Body producto: Producto
+        @Part("nombre") nombre: okhttp3.RequestBody,
+        @Part("descripcion") descripcion: okhttp3.RequestBody,
+        @Part("precio") precio: okhttp3.RequestBody,
+        @Part("stock") stock: okhttp3.RequestBody,
+        @Part("tallasDisponibles") tallasDisponibles: okhttp3.RequestBody,
+        @Part imagen: okhttp3.MultipartBody.Part?,
+        @Part("categoryId") categoryId: okhttp3.RequestBody? = null
     ): Response<Producto>
 
-    @PUT("api/admin/productos/{id}")
+    @Multipart
+    @PUT("api/products/{id}")
     suspend fun updateProducto(
         @Path("id") id: Long,
-        @Body producto: Producto
+        @Part("nombre") nombre: okhttp3.RequestBody,
+        @Part("descripcion") descripcion: okhttp3.RequestBody,
+        @Part("precio") precio: okhttp3.RequestBody,
+        @Part("stock") stock: okhttp3.RequestBody,
+        @Part("tallasDisponibles") tallasDisponibles: okhttp3.RequestBody,
+        @Part imagen: okhttp3.MultipartBody.Part?,
+        @Part("categoryId") categoryId: okhttp3.RequestBody? = null
     ): Response<Producto>
 
-    @DELETE("api/admin/productos/{id}")
+    @DELETE("api/products/{id}")
     suspend fun deleteProducto(
         @Path("id") id: Long
     ): Response<Map<String, String>>
 
     @GET("api/products")
     suspend fun getAllAdminProductos(): Response<List<Producto>>
+
+    @GET("api/products/{id}/imagen")
+    suspend fun getProductImage(@Path("id") id: Long): Response<okhttp3.ResponseBody>
 
     // =======================
     // CART
@@ -106,8 +123,21 @@ interface ApiService {
         private const val BASE_URL = "https://api-moviles-mg5l.onrender.com/" // API AWS
 
         fun create(): ApiService {
+            // Crear OkHttpClient con interceptor para headers
+            val okHttpClient = okhttp3.OkHttpClient.Builder()
+                .addInterceptor { chain ->
+                    val originalRequest = chain.request()
+                    val requestWithHeaders = originalRequest.newBuilder()
+                        .header("Content-Type", "application/json")
+                        .header("Accept", "application/json")
+                        .build()
+                    chain.proceed(requestWithHeaders)
+                }
+                .build()
+
             val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             return retrofit.create(ApiService::class.java)

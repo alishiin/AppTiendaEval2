@@ -21,12 +21,18 @@ import com.example.apptiendaval2.viewmodel.AdminViewModel
 import coil.compose.rememberAsyncImagePainter
 import androidx.compose.ui.graphics.Color
 import com.example.apptiendaeval2.ui.theme.CrimeWaveTitle
+import com.example.apptiendaeval2.utils.ImageUrlHelper
 
 @Composable
 fun BackOfficeScreen(navController: NavController, adminViewModel: AdminViewModel = viewModel()) {
 
     // Estado para el menú desplegable del usuario
     var showUserMenu by remember { mutableStateOf(false) }
+
+    // Estados para confirmación de eliminación
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var productToDelete by remember { mutableStateOf<Long?>(null) }
+    var productNameToDelete by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         adminViewModel.fetchProductos()
@@ -129,9 +135,10 @@ fun BackOfficeScreen(navController: NavController, adminViewModel: AdminViewMode
                             verticalAlignment = Alignment.CenterVertically
                         ) {
 
-                            // Imagen desde URL si existe
+                            // Imagen desde API usando ID del producto
                             val painter = rememberAsyncImagePainter(
-                                producto.imagenUrl ?: android.R.drawable.ic_menu_gallery
+                                model = ImageUrlHelper.getProductImageUrl(producto.id),
+                                error = painterResource(android.R.drawable.ic_menu_gallery)
                             )
 
                             Image(
@@ -152,13 +159,13 @@ fun BackOfficeScreen(navController: NavController, adminViewModel: AdminViewMode
                                 )
 
                                 Text(
-                                    text = "\$${producto.precio ?: 0}",
+                                    text = "\$${producto.precio ?: 0.0}",
                                     style = MaterialTheme.typography.body2,
                                     color = Color(0xFF006400)
                                 )
 
                                 Text(
-                                    text = producto.categoria?.displayName ?: "",
+                                    text = producto.categoria ?: "",
                                     style = MaterialTheme.typography.caption,
                                     color = Color.Gray
                                 )
@@ -171,7 +178,11 @@ fun BackOfficeScreen(navController: NavController, adminViewModel: AdminViewMode
                                 }) { Text("Editar") }
 
                                 TextButton(onClick = {
-                                    producto.id?.let { adminViewModel.deleteProducto(it) }
+                                    producto.id?.let { id ->
+                                        productToDelete = id
+                                        productNameToDelete = producto.nombre ?: "este producto"
+                                        showDeleteDialog = true
+                                    }
                                 }) { Text("Eliminar", color = Color.Red) }
                             }
                         }
@@ -179,5 +190,45 @@ fun BackOfficeScreen(navController: NavController, adminViewModel: AdminViewMode
                 }
             }
         }
+    }
+
+    // Diálogo de confirmación para eliminar
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = {
+                Text("Confirmar Eliminación", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+            },
+            text = {
+                Text("¿Estás seguro de que deseas eliminar \"$productNameToDelete\"?\n\nEsta acción no se puede deshacer.")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        productToDelete?.let { id ->
+                            adminViewModel.deleteProducto(id)
+                        }
+                        showDeleteDialog = false
+                        productToDelete = null
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Red,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Eliminar")
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        productToDelete = null
+                    }
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }

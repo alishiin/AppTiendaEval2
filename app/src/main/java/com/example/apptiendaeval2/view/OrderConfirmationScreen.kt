@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.apptiendaeval2.utils.ImageUrlHelper
 import com.example.apptiendaval2.viewmodel.CartViewModel
 import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
 
@@ -324,7 +325,9 @@ fun ProductConfirmationRow(item: com.example.apptiendaval2.viewmodel.CartItem) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = rememberAsyncImagePainter(item.producto.imagenUrl),
+            painter = rememberAsyncImagePainter(
+                ImageUrlHelper.getProductImageUrl(item.producto.id)
+            ),
             contentDescription = item.producto.nombre,
             modifier = Modifier.size(50.dp),
             contentScale = ContentScale.Crop
@@ -347,7 +350,7 @@ fun ProductConfirmationRow(item: com.example.apptiendaval2.viewmodel.CartItem) {
         }
 
         Text(
-            text = "\$${(item.producto.precio ?: 0) * item.cantidad}",
+            text = "\$${((item.producto.precio ?: 0) * item.cantidad)}",
             style = MaterialTheme.typography.body2,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF006400)

@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.apptiendaval2.viewmodel.CartViewModel
+import com.example.apptiendaeval2.utils.ImageUrlHelper
 
 @Composable
 fun CheckoutScreen(navController: NavController, cartViewModel: CartViewModel) {
@@ -65,7 +66,9 @@ fun CheckoutScreen(navController: NavController, cartViewModel: CartViewModel) {
 
                             // ✅ IMAGEN DESDE URL (API)
                             Image(
-                                painter = rememberAsyncImagePainter(item.producto.imagenUrl),
+                                painter = rememberAsyncImagePainter(
+                                    ImageUrlHelper.getProductImageUrl(item.producto.id)
+                                ),
                                 contentDescription = item.producto.nombre,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
@@ -78,7 +81,7 @@ fun CheckoutScreen(navController: NavController, cartViewModel: CartViewModel) {
                                 Text("Cantidad: ${item.cantidad}", color = Color.Black)
                             }
 
-                            Text("\$${(item.producto.precio ?: 0) * item.cantidad}", color = Color.Black)
+                            Text("\$${((item.producto.precio ?: 0) * item.cantidad)}", color = Color.Black)
                         }
                     }
                 }

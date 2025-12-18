@@ -23,6 +23,7 @@ import com.example.apptiendaeval2.ui.theme.FuturaPrice
 import com.example.apptiendaeval2.ui.theme.FuturaButtonStyle
 import com.example.apptiendaeval2.utils.CurrencyFormatter
 import com.example.apptiendaeval2.utils.SizeCalculator
+import com.example.apptiendaeval2.utils.ImageUrlHelper
 
 @Composable
 fun ProductDetailsScreen(
@@ -30,7 +31,9 @@ fun ProductDetailsScreen(
     producto: Producto,
     cartViewModel: CartViewModel
 ) {
-    var selectedImage by remember { mutableStateOf(producto.imagenUrl) }
+    var selectedImage by remember {
+        mutableStateOf(ImageUrlHelper.getProductImageUrl(producto.id))
+    }
 
     var selectedTalla by remember {
         mutableStateOf(
@@ -307,7 +310,7 @@ fun ProductDetailsScreen(
                         val age = userAge.toIntOrNull()
 
                         if (height != null && weight != null && age != null) {
-                            val garmentType = producto.categoria?.name ?: "POLERAS"
+                            val garmentType = producto.categoria ?: "POLERAS"
                             sizeRecommendation = SizeCalculator.getSizeRecommendationInfo(
                                 height, weight, age, garmentType
                             )
